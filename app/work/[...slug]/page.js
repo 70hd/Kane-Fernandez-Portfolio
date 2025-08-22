@@ -1,4 +1,6 @@
+// app/work/[...slug]/page.js
 "use client";
+
 import { useRef, useState, useEffect, useLayoutEffect } from "react";
 import NoPageFound from "@/app/not-found";
 import websiteCaseStudyProps from "@/app/props/website-case-study-props";
@@ -6,7 +8,6 @@ import brandingCaseStudyProps from "@/app/props/branding-case-study-props";
 import CaseStudy from "@/app/components/CaseStudy";
 import { motion, useSpring, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { use } from "react";
 
 /* ---------------- Utils ---------------- */
 function lastSegment(path = "") {
@@ -18,17 +19,20 @@ function lastSegment(path = "") {
 }
 
 export default function WorkPage({ params }) {
-  // App Router already provides params synchronously
-const { slug: rawSlug } = use(params);
-const slug = (Array.isArray(rawSlug) ? rawSlug[0] : rawSlug || "")
-  .toString()
-  .toLowerCase();
+  /* ---------- Hooks (always top-level & unconditional) ---------- */
   const pathname = usePathname();
   const reduce = useReducedMotion();
 
-  /* Scroll-to-top on route change (keeps current look/feel) */
+  // Pointer-follow CTA
+  const [cursorOn, setCursorOn] = useState(false);
+  const videoRef = useRef(null);
+  const [rect, setRect] = useState(null);
+  const cursorX = useSpring(0, { stiffness: 300, damping: 28, mass: 0.2 });
+  const cursorY = useSpring(0, { stiffness: 300, damping: 28, mass: 0.2 });
+
+  /* ---------- Scroll-to-top on route changes ---------- */
   useLayoutEffect(() => {
-    if ("scrollRestoration" in window.history) {
+    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
     const prev = document.documentElement.style.scrollBehavior;
@@ -42,19 +46,22 @@ const slug = (Array.isArray(rawSlug) ? rawSlug[0] : rawSlug || "")
     return () => clearTimeout(id);
   }, [pathname]);
 
- 
+  /* ---------- Params & matches (no hooks needed) ---------- */
+  const rawSlug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug || "";
+  const slug = String(rawSlug).toLowerCase();
 
   const websiteMatch =
-    websiteCaseStudyProps.find((item) => lastSegment(item.page) === slug) ||
-    null;
+    websiteCaseStudyProps.find((item) => lastSegment(item.page) === slug) || null;
+
   const brandingMatch =
-    brandingCaseStudyProps.find((item) => lastSegment(item.page) === slug) ||
-    null;
+    brandingCaseStudyProps.find((item) => lastSegment(item.page) === slug) || null;
 
   const match = websiteMatch || brandingMatch;
+
+  /* ---------- Early return AFTER hooks are declared ---------- */
   if (!match) return <NoPageFound slug={slug} />;
 
-  // Fallback image columns if no animationImages provided (unchanged look)
+  // Optional fallback columns if needed by <CaseStudy />
   const leftColumns = match.animationImages?.length
     ? []
     : [
@@ -68,14 +75,7 @@ const slug = (Array.isArray(rawSlug) ? rawSlug[0] : rawSlug || "")
         ["/image.png", "/image.png"],
       ];
 
-  /* Pointer-follow CTA (same look; now keyboard & reduce-motion friendly) */
-  const [cursorOn, setCursorOn] = useState(false);
-  const [rect, setRect] = useState(null);
-  const videoRef = useRef(null);
-
-  const cursorX = useSpring(0, { stiffness: 300, damping: 28, mass: 0.2 });
-  const cursorY = useSpring(0, { stiffness: 300, damping: 28, mass: 0.2 });
-
+  /* ---------- Pointer handlers (on the overlay so they fire) ---------- */
   const handleEnter = () => {
     const el = videoRef.current;
     if (el) setRect(el.getBoundingClientRect());
@@ -84,8 +84,7 @@ const slug = (Array.isArray(rawSlug) ? rawSlug[0] : rawSlug || "")
   const handleLeave = () => setCursorOn(false);
   const handleMove = (e) => {
     const el = videoRef.current;
-    if (!el) return;
-    const r = rect || el.getBoundingClientRect();
+    const r = rect || el?.getBoundingClientRect();
     if (!r) return;
     cursorX.set(e.clientX - r.left);
     cursorY.set(e.clientY - r.top);
@@ -93,7 +92,7 @@ const slug = (Array.isArray(rawSlug) ? rawSlug[0] : rawSlug || "")
 
   return (
     <div className="flex flex-col bg-white min-h-screen isolate">
-      {/* Sticky hero video section (visuals unchanged) */}
+      {/* Sticky hero video */}
       <section style={{ height: "150vh", position: "relative" }}>
         <div
           ref={videoRef}
@@ -106,9 +105,6 @@ const slug = (Array.isArray(rawSlug) ? rawSlug[0] : rawSlug || "")
             overflow: "hidden",
             background: "#000",
           }}
-          onPointerEnter={handleEnter}
-          onPointerLeave={handleLeave}
-          onPointerMove={handleMove}
         >
           <video
             src={match.src}
@@ -116,25 +112,27 @@ const slug = (Array.isArray(rawSlug) ? rawSlug[0] : rawSlug || "")
             muted
             loop
             playsInline
-            // Decorative; keeps same look while staying quiet to AT
             aria-hidden="true"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
 
-          {/* Full-cover link is always tabbable for keyboard users */}
+          {/* Full-cover link (tabbable). We attach pointer handlers here. */}
           <a
             target="_blank"
             rel="noopener noreferrer"
             href={match.projectLink}
-            className="absolute inset-0 z-[1500] block"
+            className="absolute inset-0 z-[1500] block outline-none"
             aria-label={`View ${match.ctaText ?? "project"} (opens in new tab)`}
+            onPointerEnter={handleEnter}
+            onPointerLeave={handleLeave}
+            onPointerMove={handleMove}
           >
-            {/* Keeps the same floating text look when pointer is inside.
-                For reduced motion or keyboard focus, we show a fixed
-                corner badge instead so it’s still perceivable without animation. */}
+            {/* CTA text: h2, white, no background. */}
             {reduce ? (
               <div className="absolute left-4 bottom-4">
-                <h3>{`View ${match.ctaText ?? "project"}`}</h3>
+                <h2 className="text-white text-2xl md:text-3xl font-medium">
+                  {`View ${match.ctaText ?? "project"}`}
+                </h2>
               </div>
             ) : cursorOn ? (
               <motion.div
@@ -148,7 +146,9 @@ const slug = (Array.isArray(rawSlug) ? rawSlug[0] : rawSlug || "")
                   translateY: "16px",
                 }}
               >
-                <h3>{`View ${match.ctaText ?? "project"}`}</h3>
+                <h2 className="text-white text-2xl md:text-3xl font-medium">
+                  {`View ${match.ctaText ?? "project"}`}
+                </h2>
               </motion.div>
             ) : null}
             <span className="sr-only">{`View ${match.ctaText ?? "project"}`}</span>
@@ -160,6 +160,8 @@ const slug = (Array.isArray(rawSlug) ? rawSlug[0] : rawSlug || "")
         match={match}
         alt="company logo"
         websiteMatch={websiteMatch}
+        leftColumns={leftColumns}
+        rightColumns={rightColumns}
       />
     </div>
   );

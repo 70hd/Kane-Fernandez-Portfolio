@@ -1,4 +1,5 @@
-export default [
+// was: export default [ ... ];
+const websiteCaseStudyProps = [
   {
     video: true,
     page: "/work/thelittlechihuahua",
@@ -156,3 +157,4 @@ export default [
     testimonialAuthor: "Natalie Gabellone",
   },
 ];
+export default websiteCaseStudyProps;

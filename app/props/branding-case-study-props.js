@@ -1,4 +1,4 @@
-export default [
+const websiteCaseStudyProps = [
   {
     video: true,
     page: "/work/k2",
@@ -51,3 +51,4 @@ export default [
     ],
   },
 ];
+export default websiteCaseStudyProps;

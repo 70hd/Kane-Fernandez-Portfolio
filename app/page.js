@@ -10,8 +10,8 @@ import {
 import Image from "next/image";
 import { useRef, useState, useEffect, useMemo } from "react";
 import CaseStudyPreview from "./components/CaseStudyPreview";
-import WebsiteCaseStudyProps from "./props/website-case-study-props";
-import BrandingCaseStudyProps from "./props/branding-case-study-props";
+import websiteCaseStudyProps from "./props/website-case-study-props";
+import brandingCaseStudyProps from "./props/branding-case-study-props";
 
 /* ---------------- Tunables ---------------- */
 const START_TOP = 144;
@@ -250,7 +250,7 @@ export default function Page() {
       <PinnedIntro hover={hover} setHover={setHover} />
       <CaseStudyPreview
         items={
-          hover === "Website" ? WebsiteCaseStudyProps : BrandingCaseStudyProps
+          hover === "Website" ? websiteCaseStudyProps : brandingCaseStudyProps
         }
         aria-label={`${hover} case studies`}
       />
