@@ -249,7 +249,7 @@ export default function Page() {
       <DownArrows />
       <PinnedIntro hover={hover} setHover={setHover} />
       <CaseStudyPreview
-      noBlank={true}
+      noBlank={false}
         items={
           hover === "Website" ? websiteCaseStudyProps : brandingCaseStudyProps
         }

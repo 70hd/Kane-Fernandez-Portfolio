@@ -298,6 +298,7 @@ export default function CaseStudy({ websiteMatch, match, alt }) {
           <StickySlogan match={match} slogan={match.slogan} images={match.animationImages || []} />
           {presentation.map((info, idx) => (
             <CaseCard
+            noBlank={true}
               key={idx}
               SPRING={SPRING}
               linkAll={false}
