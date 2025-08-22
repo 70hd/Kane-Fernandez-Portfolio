@@ -23,7 +23,7 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
-export default function CaseStudyPreview({ items = [] }) {
+export default function CaseStudyPreview({ items = [], noBlank = false }) {
   const router = useRouter();
   const [bg, setBg] = useState("#ffffff");
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
@@ -91,6 +91,7 @@ export default function CaseStudyPreview({ items = [] }) {
 
           {items.map((info, idx) => (
             <CaseCard
+            noBlank={noBlank}
               key={idx}
               linkAll
               SPRING={SPRING}

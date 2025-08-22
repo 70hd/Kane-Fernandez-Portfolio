@@ -12,6 +12,7 @@ import TextCursor from "./TextCursor";
 
 const CaseCard = memo(function CaseCard({
   info = {},
+  noBlank,
   idx = 0,
   setActiveColor,
   setCursorVisible,
@@ -69,7 +70,7 @@ const CaseCard = memo(function CaseCard({
       {href ? (
         <a
           href={cursorActive ? href : undefined}
-          target="_blank"
+          target={noBlank && "_blank"}
           className={`relative block w-full ${cursorActive ? "cursor-pointer" : "cursor-default"}`}
           onMouseEnter={onEnter}
           onMouseLeave={onLeave}
