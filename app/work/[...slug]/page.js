@@ -62,18 +62,18 @@ export default function WorkPage({ params }) {
   if (!match) return <NoPageFound slug={slug} />;
 
   // Optional fallback columns if needed by <CaseStudy />
-  const leftColumns = match.animationImages?.length
-    ? []
-    : [
-        ["/image.png", "/image.png"],
-        ["/image.png", "/image.png"],
-      ];
-  const rightColumns = match.animationImages?.length
-    ? []
-    : [
-        ["/image.png", "/image.png"],
-        ["/image.png", "/image.png"],
-      ];
+  // const leftColumns = match.animationImages?.length
+  //   ? []
+  //   : [
+  //       ["/image.png", "/image.png"],
+  //       ["/image.png", "/image.png"],
+  //     ];
+  // const rightColumns = match.animationImages?.length
+  //   ? []
+  //   : [
+  //       ["/image.png", "/image.png"],
+  //       ["/image.png", "/image.png"],
+  //     ];
 
   /* ---------- Pointer handlers (on the overlay so they fire) ---------- */
   const handleEnter = () => {
@@ -160,8 +160,6 @@ export default function WorkPage({ params }) {
         match={match}
         alt="company logo"
         websiteMatch={websiteMatch}
-        leftColumns={leftColumns}
-        rightColumns={rightColumns}
       />
     </div>
   );

@@ -72,12 +72,10 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
       aria-labelledby="case-studies-title "
       style={{ minHeight: "0px" }}
     >
-      <h2 id="case-studies-title" className="sr-only">
-        Case studies
-      </h2>
+
 
       {/* Content layer */}
-    <div className="relative ">
+    <div className="relative -mt-[60vh]">
         <div
           ref={null}
           className="w-full h-fit gap-9 pointer-events-auto"

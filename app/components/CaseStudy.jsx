@@ -21,9 +21,6 @@ function useReducedMotion() {
   return prefers;
 }
 
-function mod(n, m) {
-  return ((n % m) + m) % m;
-}
 
 /* ================= Small Components ================= */
 function FramedImage({
@@ -59,11 +56,11 @@ function InlineImg({ src, alt = "" }) {
       <Image
         src={src}
         alt={alt}
-        width={48}
+        width={64}
         height={32}
-        className="object-cover rounded-2xl ring-2 ring-white shadow align-middle"
+className="object-cover h-6 w-12 md:h-8 md:w-16 rounded-2xl ring-2 ring-white align-middle"
       />
-    </span>
+    </span> 
   );
 }
 
