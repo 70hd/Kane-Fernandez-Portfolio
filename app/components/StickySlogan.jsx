@@ -33,10 +33,9 @@ function SloganLayer({
   const z = 20 + index;
 
   if (reduce) {
-    // Reduced motion: final visual state, no animation
     return (
       <div
-        style={{ zIndex: z }}
+        style={{ zIndex: z, willChange: "transform, opacity" }}
         className="absolute flex items-center justify-center max-w-[82vw]"
         aria-hidden="true"
       >
@@ -71,7 +70,7 @@ function SloganLayer({
 
   return (
     <motion.div
-      style={{ opacity, y, scale, zIndex: z }}
+      style={{ opacity, y, scale, zIndex: z, willChange: "transform, opacity" }}
       className="absolute flex items-center justify-center max-w-[82vw]"
       aria-hidden="true"
     >
@@ -100,16 +99,17 @@ export default function StickySlogan({ slogan = "", images = [], match }) {
   );
   const count = Math.max(1, imgs.length);
 
-  const [vh, setVh] = useState(0);
+  // Use pixel-based section height to avoid iOS/URL-bar vh bugs
+  const [vhPx, setVhPx] = useState(0);
   useEffect(() => {
-    const set = () => setVh(window.innerHeight || 0);
+    const set = () => setVhPx(window.innerHeight || 0);
     set();
-    window.addEventListener("resize", set);
+    window.addEventListener("resize", set, { passive: true });
     return () => window.removeEventListener("resize", set);
   }, []);
 
-  const perImageVH = 140; // same look
-  const sectionHeight = `${Math.max(200, count * perImageVH)}vh`;
+  const perImageVH = 140; // same visual pacing as before
+  const sectionPx = Math.max(200, count * perImageVH) * (vhPx / 100);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -118,25 +118,28 @@ export default function StickySlogan({ slogan = "", images = [], match }) {
 
   const segLen = 1 / count;
   const SPR = { stiffness: 220, damping: 22, mass: 0.9 };
-  const startY = Math.max(vh, 480);
+  const startY = Math.max(vhPx, 480); // start just off-screen bottom
   const finalY = -40;
 
   const [l1, l2] = splitTwoLines(slogan);
 
   return (
-    <section ref={ref} className="relative" style={{ height: sectionHeight }}>
-      <div className="sticky top-0 h-screen flex items-center justify-center">
+    <section ref={ref} className="relative" style={{ height: `${sectionPx}px` }}>
+      {/* Use 100svh for mobile-safe sticky */}
+      <div className="sticky top-0 h-[100svh] flex items-center justify-center">
         <div className="relative flex items-center justify-center w-full h-full scale-50 sm:scale-75 md:scale-100 origin-center">
           {/* Single semantic H1; visual lines are aria-hidden to avoid dup reading */}
           <h1 className="sr-only">{slogan}</h1>
 
-          {/* Visual line 1 */}
+          {/* Visual line 1 (single line) */}
           <div
             className="absolute inset-0 z-10 flex items-center justify-center text-center text-[#121212]"
             style={{ transform: "translateY(-32px)" }}
             aria-hidden="true"
           >
-            <h1 className="w-[606px] min-w-[392px] leading-tight">{l1}</h1>
+            <h1 className="w-[606px] min-w-[606px] leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+              {l1}
+            </h1>
           </div>
 
           {/* Image stack */}
@@ -159,13 +162,15 @@ export default function StickySlogan({ slogan = "", images = [], match }) {
             ))}
           </div>
 
-          {/* Visual line 2 */}
+          {/* Visual line 2 (single line) */}
           <div
             className="absolute inset-0 z-[999] flex items-center justify-center text-center text-[#121212]"
             style={{ transform: "translateY(32px)" }}
             aria-hidden="true"
           >
-            <h1 className="w-[606px] min-w-[392px]  leading-tight">{l2}</h1>
+            <h1 className="w-[606px] min-w-[606px] leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+              {l2}
+            </h1>
           </div>
         </div>
       </div>
