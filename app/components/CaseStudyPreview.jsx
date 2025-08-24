@@ -77,7 +77,7 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
       </h2>
 
       {/* Content layer */}
-    <div className="relative -mt-[65vh]">
+    <div className="relative ">
         <div
           ref={null}
           className="w-full h-fit gap-9 pointer-events-auto"

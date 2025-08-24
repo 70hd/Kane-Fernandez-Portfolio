@@ -99,6 +99,7 @@ function ImageTestimonial({ text = "", images = [], author = "" }) {
 }
 
 /* ================= Timeline (click / keys / buttons) ================= */
+
 function ProcessTimeline({ slides = [] }) {
   const [index, setIndex] = useState(0);
   const [hover, setHover] = useState(false);
@@ -110,6 +111,7 @@ function ProcessTimeline({ slides = [] }) {
     Array.isArray(slides) && slides.length
       ? slides
       : [{ title: "", description: "" }];
+
   const len = safeSlides.length;
   const current = safeSlides[((index % len) + len) % len];
   const isImageSlide = Array.isArray(current.image) && current.image.length > 0;
@@ -148,7 +150,9 @@ function ProcessTimeline({ slides = [] }) {
     <div
       ref={containerRef}
       className="flex w-full dynamic-padding text-[#121212] items-center justify-center relative z-0"
-      style={{ cursor: "none" }}
+      // Normal cursor on small screens, custom cursor hidden on md+
+      // (Tailwind: base cursor-auto, md breakpoint switches to cursor-none)
+      style={{}}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onMouseMove={handleMouseMove}
@@ -156,6 +160,18 @@ function ProcessTimeline({ slides = [] }) {
       role="button"
       tabIndex={0}
     >
+      {/* Give the container responsive cursor behavior via className so it's CSS-driven */}
+      <style jsx>{`
+        div[role="button"] {
+          cursor: auto;
+        }
+        @media (min-width: 768px) {
+          div[role="button"] {
+            cursor: none;
+          }
+        }
+      `}</style>
+
       {isIntroSlide && (
         <div className="flex text-[#121212] flex-col h-full w-full gap-6 items-center">
           {current.title && <h3>{current.title}</h3>}
@@ -166,6 +182,7 @@ function ProcessTimeline({ slides = [] }) {
           )}
         </div>
       )}
+
       {isImageSlide && current.image.length === 1 && (
         <div className="flex flex-col items-start w-full gap-3 overflow-hidden">
           <FramedImage
@@ -173,11 +190,12 @@ function ProcessTimeline({ slides = [] }) {
             ratio={current.ratio?.[0] ?? 1248 / 492}
             fit={current.fit?.[0] || "cover"}
             position={current.position?.[0] || "50% 50%"}
-            className="w-full"
+            className="w-full  md:min-h-[492px] max-h-[285px] min-h-[285px]"
           />
           {current.text && <p className="max-w-[720px]">{current.text}</p>}
         </div>
       )}
+
       {isImageSlide && current.image.length === 2 && (
         <div className="flex flex-col gap-6 w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
@@ -186,14 +204,14 @@ function ProcessTimeline({ slides = [] }) {
               ratio={current.ratio?.[0] ?? 392 / 492}
               fit={current.fit?.[0] || "cover"}
               position={current.position?.[0] || "50% 50%"}
-              className="w-full"
+              className="w-full md:min-h-[492px] max-h-[285px]"
             />
             <FramedImage
               src={current.image[1]}
               ratio={current.ratio?.[1] ?? 392 / 492}
               fit={current.fit?.[1] || "cover"}
               position={current.position?.[1] || "50% 50%"}
-              className="hidden md:block w-full"
+              className="hidden md:block w-full md:min-h-[492px] max-h-[285px]"
             />
           </div>
           {current.text && <p className="max-w-[720px]">{current.text}</p>}
@@ -204,37 +222,85 @@ function ProcessTimeline({ slides = [] }) {
         <p className="text-center text-black/60">No process content yet.</p>
       )}
 
+      {/* --- Desktop: cursor-follow arrow (hidden on small screens) --- */}
       {hover && (
-        <div
-          style={{
-            position: "fixed",
-            left: 0,
-            top: 0,
-            transform: `translate(${pos.x}px, ${pos.y}px)`,
-            pointerEvents: "none",
-            zIndex: 9999,
-          }}
-        >
+        <div className="hidden md:block">
           <div
             style={{
-              transform: `translate(12px,16px) rotate(${
-                isIntroSlide ? -90 : isRightSide ? -90 : 90
-              }deg)`,
+              position: "fixed",
+              left: 0,
+              top: 0,
+              transform: `translate(${pos.x}px, ${pos.y}px)`,
+              pointerEvents: "none",
+              zIndex: 9999,
             }}
           >
-            <Image
-              src="/black-downward-arrow.svg"
-              alt="downward-arrow"
-              width={32}
-              height={32}
-              className="opacity-90"
-            />
+            <div
+              style={{
+                transform: `translate(12px,16px) rotate(${
+                  isIntroSlide ? -90 : isRightSide ? -90 : 90
+                }deg)`,
+              }}
+            >
+              <Image
+                src="/black-downward-arrow.svg"
+                alt="downward-arrow"
+                width={32}
+                height={32}
+                className="opacity-90"
+              />
+            </div>
           </div>
         </div>
       )}
+
+      {/* --- Mobile: fixed left/right arrows (visible only on small screens) --- */}
+      <div className="md:hidden pointer-events-none absolute inset-0">
+        {/* Left arrow (disabled on intro slide) */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!isIntroSlide) prev();
+          }}
+          aria-label={isIntroSlide ? "Previous (disabled on intro)" : "Previous"}
+          aria-disabled={isIntroSlide}
+          disabled={isIntroSlide}
+          className={`pointer-events-auto absolute left-2 top-1/2 -translate-y-1/2 ${isIntroSlide ? "opacity-40" : "opacity-100"}`}
+        >
+          <Image
+            src="/black-downward-arrow.svg"
+            alt="left"
+            width={24}
+            height={24}
+            className="rotate-90" // down arrow rotated left
+          />
+        </button>
+
+        {/* Right arrow (always active) */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            next();
+          }}
+          aria-label="Next"
+          className="pointer-events-auto absolute right-2 top-1/2 -translate-y-1/2 "
+        >
+          <Image
+            src="/black-downward-arrow.svg"
+            alt="right"
+            width={24}
+            height={24}
+            className="-rotate-90" // down arrow rotated right
+          />
+        </button>
+      </div>
     </div>
   );
 }
+
+
 
 /* ================= Page ================= */
 export default function CaseStudy({ websiteMatch, match, alt }) {
@@ -266,7 +332,7 @@ export default function CaseStudy({ websiteMatch, match, alt }) {
 
           {/* Timeline */}
           <section
-            className="y-dynamic-padding w-full my-24 h-[820px] flex justify-center items-center"
+            className="y-dynamic-padding w-full my-24 h-[820px] max-h-[309px] flex justify-center items-center"
             style={{
               minHeight: "min(684px, 90vh)",
               backgroundColor: bg,
