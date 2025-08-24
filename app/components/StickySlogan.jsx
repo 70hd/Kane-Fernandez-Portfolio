@@ -17,11 +17,48 @@ function splitTwoLines(text = "") {
   return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
 }
 
-/* One layer per image so hooks aren't in a loop */
+/* Measure section top/height + viewport px for robust iOS progress */
+function useSectionMetrics(ref) {
+  const [m, setM] = useState({ top: 0, height: 0, vh: 0 });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const measure = () => {
+      const rect = el.getBoundingClientRect();
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      setM({
+        top: rect.top + scrollY,
+        height: el.offsetHeight || rect.height || 0,
+        vh: window.innerHeight || 0,
+      });
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("resize", measure, { passive: true });
+    window.addEventListener("orientationchange", measure, { passive: true });
+    // Slight defer helps after fonts/images load
+    const tm = setTimeout(measure, 0);
+
+    return () => {
+      clearTimeout(tm);
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+    };
+  }, [ref]);
+
+  return m;
+}
+
+/* One layer per image */
 function SloganLayer({
   index,
   src,
-  scrollYProgress,
+  progress,   // 0..1 for whole section
   segLen,
   startY,
   finalY,
@@ -40,33 +77,26 @@ function SloganLayer({
         aria-hidden="true"
       >
         <div className="relative w-[392px] h-[225px]">
-          <Image
-            src={src}
-            alt=""
-            fill
-            className="object-contain"
-            sizes="392px"
-            priority={index === 0}
-          />
+          <Image src={src} alt="" fill className="object-contain" sizes="392px" priority={index===0} />
         </div>
       </div>
     );
   }
 
-  const localT = useTransform(scrollYProgress, (t) => {
-    const clamped = Math.max(0, Math.min(0.999999, t));
+  // Map global 0..1 -> this image’s local 0..1 window
+  const localT = useTransform(progress, (t) => {
     const start = index * segLen;
-    const lt = (clamped - start) / segLen;
+    const lt = (t - start) / segLen;
     return Math.max(0, Math.min(1, lt));
   });
 
   const opacityMV = useTransform(localT, [0, IN_START, IN_END, 1], [0, 0, 1, 1]);
-  const yMV = useTransform(localT, [0, IN_START, IN_END, 1], [startY, startY, finalY, finalY]);
-  const scaleMV = useTransform(localT, [0, IN_START, IN_END, 1], [0.94, 0.94, 1, 1]);
+  const yMV       = useTransform(localT, [0, IN_START, IN_END, 1], [startY, startY, finalY, finalY]);
+  const scaleMV   = useTransform(localT, [0, IN_START, IN_END, 1], [0.94, 0.94, 1, 1]);
 
   const opacity = useSpring(opacityMV, springCfg);
-  const y = useSpring(yMV, springCfg);
-  const scale = useSpring(scaleMV, springCfg);
+  const y       = useSpring(yMV, springCfg);
+  const scale   = useSpring(scaleMV, springCfg);
 
   return (
     <motion.div
@@ -75,14 +105,7 @@ function SloganLayer({
       aria-hidden="true"
     >
       <div className="relative w-[392px] h-[225px]">
-        <Image
-          src={src}
-          alt=""
-          fill
-          className="object-contain"
-          sizes="392px"
-          priority={index === 0}
-        />
+        <Image src={src} alt="" fill className="object-contain" sizes="392px" priority={index===0} />
       </div>
     </motion.div>
   );
@@ -99,39 +122,45 @@ export default function StickySlogan({ slogan = "", images = [], match }) {
   );
   const count = Math.max(1, imgs.length);
 
-  // Use pixel-based section height to avoid iOS/URL-bar vh bugs
+  // Section height in pixels (avoid vh quirks)
+  const perImageVH = 140;
   const [vhPx, setVhPx] = useState(0);
   useEffect(() => {
     const set = () => setVhPx(window.innerHeight || 0);
     set();
     window.addEventListener("resize", set, { passive: true });
-    return () => window.removeEventListener("resize", set);
+    window.addEventListener("orientationchange", set, { passive: true });
+    return () => {
+      window.removeEventListener("resize", set);
+      window.removeEventListener("orientationchange", set);
+    };
   }, []);
-
-  const perImageVH = 140; // same visual pacing as before
   const sectionPx = Math.max(200, count * perImageVH) * (vhPx / 100);
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"],
-  });
+  // Global progress from window scrollY against the section’s top/bottom
+  const { scrollY } = useScroll();
+  const { top, height, vh } = useSectionMetrics(ref);
+  // Start when section top meets viewport top; end when section bottom meets viewport bottom
+  const start = top;
+  const end   = Math.max(top + height - vh, start + 1); // avoid identical range
+  const progress = useTransform(scrollY, [start, end], [0, 1], { clamp: true });
 
   const segLen = 1 / count;
   const SPR = { stiffness: 220, damping: 22, mass: 0.9 };
-  const startY = Math.max(vhPx, 480); // start just off-screen bottom
+  const startY = Math.max(vhPx || vh || 0, 480); // off-screen bottom
   const finalY = -40;
 
   const [l1, l2] = splitTwoLines(slogan);
 
   return (
     <section ref={ref} className="relative" style={{ height: `${sectionPx}px` }}>
-      {/* Use 100svh for mobile-safe sticky */}
+      {/* Use 100svh so iOS won’t expand with URL bar */}
       <div className="sticky top-0 h-[100svh] flex items-center justify-center">
         <div className="relative flex items-center justify-center w-full h-full scale-50 sm:scale-75 md:scale-100 origin-center">
           {/* Single semantic H1; visual lines are aria-hidden to avoid dup reading */}
           <h1 className="sr-only">{slogan}</h1>
 
-          {/* Visual line 1 (single line) */}
+          {/* Visual line 1 — force single line */}
           <div
             className="absolute inset-0 z-10 flex items-center justify-center text-center text-[#121212]"
             style={{ transform: "translateY(-32px)" }}
@@ -152,7 +181,7 @@ export default function StickySlogan({ slogan = "", images = [], match }) {
                 key={i}
                 index={i}
                 src={src}
-                scrollYProgress={scrollYProgress}
+                progress={progress}
                 segLen={segLen}
                 startY={startY}
                 finalY={finalY}
@@ -162,7 +191,7 @@ export default function StickySlogan({ slogan = "", images = [], match }) {
             ))}
           </div>
 
-          {/* Visual line 2 (single line) */}
+          {/* Visual line 2 — force single line */}
           <div
             className="absolute inset-0 z-[999] flex items-center justify-center text-center text-[#121212]"
             style={{ transform: "translateY(32px)" }}
