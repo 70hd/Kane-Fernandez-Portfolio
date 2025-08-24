@@ -136,7 +136,7 @@ export default function StickySlogan({ slogan = "", images = [], match }) {
             style={{ transform: "translateY(-32px)" }}
             aria-hidden="true"
           >
-            <h1 className="w-[606px] leading-tight">{l1}</h1>
+            <h1 className="w-[606px] min-w-[392px] leading-tight">{l1}</h1>
           </div>
 
           {/* Image stack */}
@@ -165,7 +165,7 @@ export default function StickySlogan({ slogan = "", images = [], match }) {
             style={{ transform: "translateY(32px)" }}
             aria-hidden="true"
           >
-            <h1 className="w-[606px] leading-tight">{l2}</h1>
+            <h1 className="w-[606px] min-w-[392px]  leading-tight">{l2}</h1>
           </div>
         </div>
       </div>

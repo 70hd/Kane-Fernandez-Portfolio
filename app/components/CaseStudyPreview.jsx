@@ -70,16 +70,14 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
     <section
       className="relative isolate z-[200] overflow-visible"
       aria-labelledby="case-studies-title"
-      style={{ minHeight: "0px" }}
     >
       <h2 id="case-studies-title" className="sr-only">
         Case studies
       </h2>
 
-      {/* Content layer */}
-      <div className="absolute inset-x-0" style={{ top: "-65vh" }}>
+      {/* Content layer in normal flow to avoid blank scroll */}
+      <div className="relative -mt-[65vh]">
         <div
-          ref={null}
           className="w-full h-fit gap-9 pointer-events-auto"
           style={{
             backgroundColor: bg,
@@ -91,7 +89,7 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
 
           {items.map((info, idx) => (
             <CaseCard
-            noBlank={noBlank}
+              noBlank={noBlank}
               key={idx}
               linkAll
               SPRING={SPRING}
@@ -126,9 +124,7 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{
-              duration: reduceMotion ? 0 : OVERLAY_MS / 1000,
-            }}
+            transition={{ duration: reduceMotion ? 0 : OVERLAY_MS / 1000 }}
             style={{ background: "rgba(0,0,0,0.6)" }}
             onClick={(e) => {
               // Click outside video closes overlay
@@ -156,7 +152,7 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
                 position: "absolute",
                 inset: 0,
                 width: "100vw",
-                height: "100vh",
+                height: "100svh", // mobile-safe viewport height
                 objectFit: "cover",
               }}
               initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
