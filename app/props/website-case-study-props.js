@@ -120,5 +120,61 @@ const websiteCaseStudyProps = [
     ],
     testimonialAuthor: "Natalie Gabellone",
   },
+    {
+    video: true,
+    page: "/work/komakase",
+    color: "#CBB9D5",
+    projectLink:
+      "https://komakase.coffee/",
+    companyLogo: "/komakase-logo.svg",
+    projectDescription:
+      "I partnered with Komakase to build a high-converting Shopify website featuring subscriptions and custom functionality, while redesigning their typography and brand colors to create a modern site aligned with their brand identity—achieving nearly a 7% conversion rate on day one.",
+    companyName: "Komakase",
+    desc: "Design/Development",
+    ctaText: "website",
+    src: "/komakase-showreel.mp4",
+    timeLineImages: [
+      {
+        title: "Process",
+        description:
+          "We began with a vision to build a seamless coffee subscription system while elevating the overall look and feel of their existing website.",
+      },
+        {
+        image: [
+          "/komakase-competetor-reasearch-1.png",
+          "/komakase-competetor-reasearch-2.png",
+        ],
+        text: "Competitor Research",
+      },
+      { image: ["/shopify-themes.png"], text: "Shopify Theme Reasearch" },
+      {
+        image: [
+          "/komakase-imagry-1.png",
+          "/komakase-imagry-2.png",
+        ],
+        text: "Komakase Imagery Selection",
+      },
+      {
+        image: ["/shopify-liquid.png"],
+        text: "Shopify Theme Customization",
+      },
+      {
+        image: ["/komakse-final-webiste-comparison.png"],
+        text: "Finalized New Design System",
+      },
+      {
+        image: ["/komakase-a-1.png","/komakase-a-2.png"],
+        text: "Analytics",
+      },
+    ],
+    testimonialText:
+      "Kane [img0] is professional and communicative [img2], with [img1] clear passion—a pleasure to work with; highly recommended.",
+    testimonialImages: [
+      "/komakase-testimonial-image-0.jpg",
+      "/komakase-testimonial-image-1.jpg",
+      "/komakase-testimonial-image-2.jpg",
+    ],
+    testimonialAuthor: "Josh D'esposito",
+  },
 ];
 export default websiteCaseStudyProps;
