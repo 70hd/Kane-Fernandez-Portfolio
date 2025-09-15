@@ -5,7 +5,7 @@ const websiteCaseStudyProps = [
     color: "#CBB9D5",
     companyName: "K2",
     projectLink: "/k2-brand-guidelines.pdf",
-    desc: "Brand Guide",
+    desc: "Brand Guidelines",
     src: "/k2-showreel.mp4",
     slogan: "Clean energy for high performers",
     animationImages: [
@@ -17,33 +17,33 @@ const websiteCaseStudyProps = [
       {
         image: "/k2-presentation-1.png",
         link: "/k2-brand-guidelines.pdf",
-        cursorText: "View Brand Guide",
+        cursorText: "View Brand Guidelines",
           firstIndex: true
       },
       {
         image: "/k2-presentation-2.png",
-        cursorText: "View Brand Guide",
+        cursorText: "View Brand Guidelines",
       },
       {
         image: "/k2-presentation-3.png",
-        cursorText: "View Brand Guide",
+        cursorText: "View Brand Guidelines",
       },
       {
         image: "/k2-presentation-4.png",
-        cursorText: "View Brand Guide",
+        cursorText: "View Brand Guidelines",
       },
       {
         image: "/k2-presentation-5.png",
-        cursorText: "View Brand Guide",
+        cursorText: "View Brand Guidelines",
       },
       {
         image: "/k2-presentation-6.png",
-        cursorText: "View Brand Guide",
+        cursorText: "View Brand Guidelines",
       },
       {
         image: "/k2-presentation-7.png",
         link: "/k2-brand-guidelines.pdf",
-        cursorText: "View Brand Guide",
+        cursorText: "View Brand Guidelines",
         lastIndex: true
       },
 
