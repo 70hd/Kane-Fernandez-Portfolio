@@ -27,7 +27,7 @@ function HoverWord({ text, active, setHover }) {
     setHover(text);
     if (text === "Branding") {
       if (reduce) {
-        window.scrollBy({ top: 6000, left: 0, behavior: "auto" });
+        window.scrollBy({ top: 4000, left: 0, behavior: "auto" });
       } else {
         // Keep the same multi-step smooth scroll feel
         const step = () =>

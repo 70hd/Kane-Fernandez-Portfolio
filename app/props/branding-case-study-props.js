@@ -50,5 +50,108 @@ const websiteCaseStudyProps = [
       ,
     ],
   },
+    {
+    video: true,
+    page: "/work/viderna",
+    color: "#CBB9D5",
+    companyName: "Viderna",
+    projectLink: "/viderna-brand-positioning.pdf",
+    desc: "Brand Positioning",
+    src: "/viderna-showreel.mp4",
+    slogan: "Fuel Move Thrive",
+    animationImages: [
+      "/viderna-logo-1.svg",
+      "/viderna-logo-2.svg",
+    "/viderna-logo-3.svg",
+    "/viderna-logo-4.svg",
+    "/viderna-logo-5.svg",
+    "/viderna-logo-6.svg",
+    ],
+    presentation: [
+      {
+        image: "/viderna-presentation-1.png",
+        link: "/viderna-brand-positioning.pdf",
+        cursorText: "View Brand Positioning",
+          firstIndex: true
+      },
+      {
+        image: "/viderna-presentation-2.png",
+        cursorText: "View Brand Positioning",
+      },
+      {
+        image: "/viderna-presentation-3.png",
+        cursorText: "View Brand Positioning",
+      },
+      {
+        image: "/viderna-presentation-4.png",
+        cursorText: "View Brand Positioning",
+      },
+      {
+        image: "/viderna-presentation-5.png",
+        cursorText: "View Brand Positioning",
+      },
+      {
+        image: "/viderna-presentation-6.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-7.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-8.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-9.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-10.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-11.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-12.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-13.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-14.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-15.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-16.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-17.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-18.png",
+        cursorText: "View Brand Positioning",
+      },
+
+      {
+        image: "/viderna-presentation-19.png",
+        link: "/viderna-brand-positioning.pdf",
+        cursorText: "View Brand Positioning",
+        lastIndex: true
+      },
+
+      ,
+    ],
+  },
 ];
 export default websiteCaseStudyProps;
