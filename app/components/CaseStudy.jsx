@@ -1,10 +1,13 @@
 "use client";
 
-import { useRef, useEffect, useState, useMemo } from "react";
+import { useRef, useEffect, useState, useMemo, useCallback, memo, Suspense } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import Navbar from "./navbar";
-import StickySlogan from "./StickySlogan";
-import CaseCard from "./CaseCard";
+
+/* ================= Code-split big chunks ================= */
+const Navbar = dynamic(() => import("./navbar"), { ssr: false, loading: () => null });
+const StickySlogan = dynamic(() => import("./StickySlogan"), { ssr: false, loading: () => null });
+const CaseCard = dynamic(() => import("./CaseCard"), { ssr: false, loading: () => null });
 
 /* ================= Utils ================= */
 const SPRING = { stiffness: 120, damping: 20, mass: 0.9 };
@@ -21,9 +24,31 @@ function useReducedMotion() {
   return prefers;
 }
 
+/** Mount children only when near viewport (saves render + hydration) */
+const ViewMount = memo(function ViewMount({ rootMargin = "400px", children }) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
 
-/* ================= Small Components ================= */
-function FramedImage({
+  useEffect(() => {
+    if (!ref.current || visible) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisible(true);
+          io.disconnect();
+        }
+      },
+      { root: null, rootMargin, threshold: 0.01 }
+    );
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [visible, rootMargin]);
+
+  return <div ref={ref}>{visible ? children : null}</div>;
+});
+
+/* ================= Small Components (memoized) ================= */
+const FramedImage = memo(function FramedImage({
   src,
   alt = "",
   className = "",
@@ -45,12 +70,14 @@ function FramedImage({
         className={fit === "contain" ? "object-contain" : "object-cover"}
         style={{ objectPosition: position, backgroundColor: fit === "contain" ? "#fff" : "transparent" }}
         priority={priority}
+        loading={priority ? undefined : "lazy"}
+        decoding="async"
       />
     </div>
   );
-}
+});
 
-function InlineImg({ src, alt = "" }) {
+const InlineImg = memo(function InlineImg({ src, alt = "" }) {
   return (
     <span className="inline-block align-middle mx-1">
       <Image
@@ -58,13 +85,15 @@ function InlineImg({ src, alt = "" }) {
         alt={alt}
         width={64}
         height={32}
-className="object-cover h-6 w-12 md:h-8 md:w-16 rounded-2xl ring-2 ring-white align-middle"
+        className="object-cover h-6 w-12 md:h-8 md:w-16 rounded-2xl ring-2 ring-white align-middle"
+        loading="lazy"
+        decoding="async"
       />
-    </span> 
+    </span>
   );
-}
+});
 
-function ImageTestimonial({ text = "", images = [], author = "" }) {
+const ImageTestimonial = memo(function ImageTestimonial({ text = "", images = [], author = "" }) {
   const parts = useMemo(
     () =>
       String(text)
@@ -93,30 +122,28 @@ function ImageTestimonial({ text = "", images = [], author = "" }) {
       </figure>
     </section>
   );
-}
+});
 
-/* ================= Timeline (click / keys / buttons) ================= */
-
-function ProcessTimeline({ slides = [] }) {
+/* ================= Timeline (kept inline, optimized) ================= */
+const ProcessTimeline = memo(function ProcessTimeline({ slides = [] }) {
   const [index, setIndex] = useState(0);
   const [hover, setHover] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [isRightSide, setIsRightSide] = useState(true);
   const containerRef = useRef(null);
 
-  const safeSlides =
-    Array.isArray(slides) && slides.length
-      ? slides
-      : [{ title: "", description: "" }];
+  const safeSlides = useMemo(
+    () => (Array.isArray(slides) && slides.length ? slides : [{ title: "", description: "" }]),
+    [slides]
+  );
 
   const len = safeSlides.length;
   const current = safeSlides[((index % len) + len) % len];
   const isImageSlide = Array.isArray(current.image) && current.image.length > 0;
-  const isIntroSlide =
-    !isImageSlide && (!!current.title || !!current.description);
+  const isIntroSlide = !isImageSlide && (!!current.title || !!current.description);
 
-  const next = () => setIndex((i) => i + 1);
-  const prev = () => setIndex((i) => i - 1);
+  const next = useCallback(() => setIndex((i) => i + 1), []);
+  const prev = useCallback(() => setIndex((i) => i - 1), []);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -128,55 +155,45 @@ function ProcessTimeline({ slides = [] }) {
         prev();
       }
     };
-    window.addEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey, { passive: false });
     return () => window.removeEventListener("keydown", onKey);
-  }, [isIntroSlide]);
+  }, [isIntroSlide, next, prev]);
 
-  const handleMouseMove = (e) => {
-    setPos({ x: e.clientX, y: e.clientY });
-    if (isIntroSlide) return;
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (rect) setIsRightSide(e.clientX >= rect.left + rect.width / 2);
-  };
+  const handleMouseMove = useCallback(
+    (e) => {
+      setPos({ x: e.clientX, y: e.clientY });
+      if (isIntroSlide) return;
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) setIsRightSide(e.clientX >= rect.left + rect.width / 2);
+    },
+    [isIntroSlide]
+  );
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     isIntroSlide ? next() : isRightSide ? next() : prev();
-  };
+  }, [isIntroSlide, isRightSide, next, prev]);
 
   return (
     <div
       ref={containerRef}
       className="flex w-full dynamic-padding text-[#121212] items-center justify-center relative z-0"
-      // Normal cursor on small screens, custom cursor hidden on md+
-      // (Tailwind: base cursor-auto, md breakpoint switches to cursor-none)
-      style={{}}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onMouseMove={handleMouseMove}
       onClick={handleClick}
       role="button"
       tabIndex={0}
+      aria-label="Process timeline"
     >
-      {/* Give the container responsive cursor behavior via className so it's CSS-driven */}
       <style jsx>{`
-        div[role="button"] {
-          cursor: auto;
-        }
-        @media (min-width: 768px) {
-          div[role="button"] {
-            cursor: none;
-          }
-        }
+        div[role="button"] { cursor: auto; }
+        @media (min-width: 768px) { div[role="button"] { cursor: none; } }
       `}</style>
 
       {isIntroSlide && (
         <div className="flex text-[#121212] flex-col h-full w-full gap-6 items-center">
           {current.title && <h3>{current.title}</h3>}
-          {current.description && (
-            <p className="max-w-[606px] w-full text-center">
-              {current.description}
-            </p>
-          )}
+          {current.description && <p className="max-w-[606px] w-full text-center">{current.description}</p>}
         </div>
       )}
 
@@ -187,7 +204,7 @@ function ProcessTimeline({ slides = [] }) {
             ratio={current.ratio?.[0] ?? 1248 / 492}
             fit={current.fit?.[0] || "cover"}
             position={current.position?.[0] || "50% 50%"}
-            className="w-full  md:min-h-[492px] max-h-[285px] min-h-[285px]"
+            className="w-full md:min-h-[492px] max-h-[285px] min-h-[285px]"
           />
           {current.text && <p className="max-w-[720px]">{current.text}</p>}
         </div>
@@ -219,7 +236,7 @@ function ProcessTimeline({ slides = [] }) {
         <p className="text-center text-black/60">No process content yet.</p>
       )}
 
-      {/* --- Desktop: cursor-follow arrow (hidden on small screens) --- */}
+      {/* Desktop cursor-follow arrow (lazy image decode) */}
       {hover && (
         <div className="hidden md:block">
           <div
@@ -234,9 +251,7 @@ function ProcessTimeline({ slides = [] }) {
           >
             <div
               style={{
-                transform: `translate(12px,16px) rotate(${
-                  isIntroSlide ? -90 : isRightSide ? -90 : 90
-                }deg)`,
+                transform: `translate(12px,16px) rotate(${isIntroSlide ? -90 : isRightSide ? -90 : 90}deg)`,
               }}
             >
               <Image
@@ -245,15 +260,16 @@ function ProcessTimeline({ slides = [] }) {
                 width={32}
                 height={32}
                 className="opacity-90"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
         </div>
       )}
 
-      {/* --- Mobile: fixed left/right arrows (visible only on small screens) --- */}
+      {/* Mobile fixed arrows */}
       <div className="md:hidden pointer-events-none absolute inset-0">
-        {/* Left arrow (disabled on intro slide) */}
         <button
           type="button"
           onClick={(e) => {
@@ -270,11 +286,12 @@ function ProcessTimeline({ slides = [] }) {
             alt="left"
             width={24}
             height={24}
-            className="rotate-90" // down arrow rotated left
+            className="rotate-90"
+            loading="lazy"
+            decoding="async"
           />
         </button>
 
-        {/* Right arrow (always active) */}
         <button
           type="button"
           onClick={(e) => {
@@ -289,95 +306,123 @@ function ProcessTimeline({ slides = [] }) {
             alt="right"
             width={24}
             height={24}
-            className="-rotate-90" // down arrow rotated right
+            className="-rotate-90"
+            loading="lazy"
+            decoding="async"
           />
         </button>
       </div>
     </div>
   );
-}
-
-
+});
 
 /* ================= Page ================= */
 export default function CaseStudy({ websiteMatch, match, alt }) {
   const reduce = useReducedMotion();
   const [bg, setBg] = useState("transparent");
 
+  // Soften first-paint jank: apply bg after a frame
   useEffect(() => {
     setBg("transparent");
     const r = requestAnimationFrame(() => setBg(match.color));
     return () => cancelAnimationFrame(r);
-  }, [match.color]);
+  }, [match?.color]);
 
-  const presentation = match.presentation ?? [];
+  const presentation = match?.presentation ?? [];
   const [cursorVisible, setCursorVisible] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [expandedIndex, setExpandedIndex] = useState(null);
 
+  // Stable handlers to avoid child re-renders
+  const onExpand = useCallback((i) => {
+    setCursorVisible(false);
+    setExpandedIndex(i);
+  }, []);
+
   return (
     <div className="relative flex flex-col bg-white min-h-screen">
-      <Navbar />
+      {/* Lazy-hydrated navbar */}
+      <Suspense fallback={null}>
+        <Navbar />
+      </Suspense>
 
       {websiteMatch ? (
         <div className="flex flex-col">
-          {/* Intro */}
+          {/* Intro (don’t use priority unless this is above the fold) */}
           <header className="relative z-20 my-24 md:my-48 flex flex-col gap-6 items-center w-full dynamic-padding text-center">
-            <Image src={match.companyLogo} width={285} height={285} alt={alt || `${match.companyName} logo`} />
+            <Image
+              src={match.companyLogo}
+              width={285}
+              height={285}
+              alt={alt || `${match.companyName} logo`}
+              loading="lazy"
+              decoding="async"
+            />
             <p className="max-w-[606px] text-[#121212]">{match.projectDescription}</p>
           </header>
 
-          {/* Timeline */}
-          <section
-            className="y-dynamic-padding w-full my-24 h-[820px] max-h-[309px] flex justify-center items-center"
-            style={{
-              minHeight: "min(684px, 90vh)",
-              backgroundColor: bg,
-              transition: reduce ? "none" : "background-color 450ms ease",
-            }}
-            aria-label="Project process"
-          >
-            <div className="w-full max-w-[1248px] flex justify-center px-4 md:px-8 mx-auto">
-              <ProcessTimeline slides={match.timeLineImages} />
-            </div>
-          </section>
+          {/* Timeline (mount when close to viewport) */}
+          <ViewMount rootMargin="500px">
+            <section
+              className="y-dynamic-padding w-full my-24 h-[820px] max-h-[309px] flex justify-center items-center"
+              style={{
+                minHeight: "min(684px, 90vh)",
+                backgroundColor: bg,
+                transition: reduce ? "none" : "background-color 450ms ease",
+              }}
+              aria-label="Project process"
+            >
+              <div className="w-full max-w-[1248px] flex justify-center px-4 md:px-8 mx-auto">
+                <ProcessTimeline slides={match.timeLineImages} />
+              </div>
+            </section>
+          </ViewMount>
 
-          {/* Testimonial */}
-          <ImageTestimonial
-            text={
-              match.testimonialText ||
-              "Kane is warm and friendly [img0], with passion [img1] and proven dedication [img2]."
-            }
-            images={
-              Array.isArray(match.testimonialImages)
-                ? match.testimonialImages
-                : ["/image.png", "/image.png", "/image.png"]
-            }
-            author={match.testimonialAuthor || ""}
-          />
+          {/* Testimonial (also mount on approach) */}
+          <ViewMount rootMargin="500px">
+            <ImageTestimonial
+              text={
+                match.testimonialText ||
+                "Kane is warm and friendly [img0], with passion [img1] and proven dedication [img2]."
+              }
+              images={
+                Array.isArray(match.testimonialImages)
+                  ? match.testimonialImages
+                  : ["/image.png", "/image.png", "/image.png"]
+              }
+              author={match.testimonialAuthor || ""}
+            />
+          </ViewMount>
         </div>
       ) : (
         <main>
-          <StickySlogan match={match} slogan={match.slogan} images={match.animationImages || []} />
+          {/* StickySlogan is heavy — code-split + mount on approach */}
+          <ViewMount rootMargin="500px">
+            <Suspense fallback={null}>
+              <StickySlogan match={match} slogan={match.slogan} images={match.animationImages || []} />
+            </Suspense>
+          </ViewMount>
+
+          {/* Case cards: mount and hydrate only when near the viewport */}
           {presentation.map((info, idx) => (
-            <CaseCard
-            noBlank={true}
-              key={idx}
-              SPRING={SPRING}
-              linkAll={false}
-              idx={idx}
-              info={info}
-              cursorVisible={cursorVisible}
-              cursorPos={cursorPos}
-              setActiveColor={setBg}
-              setCursorVisible={setCursorVisible}
-              setCursorPos={setCursorPos}
-              expandedIndex={expandedIndex}
-              onExpand={(i) => {
-                setCursorVisible(false);
-                setExpandedIndex(i);
-              }}
-            />
+            <ViewMount key={idx} rootMargin="600px">
+              <Suspense fallback={null}>
+                <CaseCard
+                  noBlank
+                  SPRING={SPRING}
+                  linkAll={false}
+                  idx={idx}
+                  info={info}
+                  cursorVisible={cursorVisible}
+                  cursorPos={cursorPos}
+                  setActiveColor={setBg}
+                  setCursorVisible={setCursorVisible}
+                  setCursorPos={setCursorPos}
+                  expandedIndex={expandedIndex}
+                  onExpand={onExpand}
+                />
+              </Suspense>
+            </ViewMount>
           ))}
         </main>
       )}

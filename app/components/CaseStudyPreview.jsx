@@ -1,10 +1,19 @@
 "use client";
 
-import Navbar from "./navbar";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import CaseCard from "./CaseCard";
+
+/* ---------- Lazy chunks (reduce JS on first paint) ---------- */
+const Navbar = dynamic(() => import("./navbar"), {
+  ssr: false,
+  loading: () => null,
+});
+const CaseCardLazy = dynamic(() => import("./CaseCard"), {
+  ssr: false,
+  loading: () => null,
+});
 
 /* ---------- Tunables ---------- */
 const SPRING = { stiffness: 120, damping: 20, mass: 0.9 };
@@ -23,6 +32,30 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
+/** Mounts children only when close to viewport (saves hydration) */
+function ViewMount({ rootMargin = "200px", children }) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!ref.current || visible) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisible(true);
+          io.disconnect();
+        }
+      },
+      { root: null, rootMargin, threshold: 0.01 }
+    );
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [visible, rootMargin]);
+
+  return <div ref={ref}>{visible ? children : null}</div>;
+}
+
+/* ---------- Component ---------- */
 export default function CaseStudyPreview({ items = [], noBlank = false }) {
   const router = useRouter();
   const [bg, setBg] = useState("#ffffff");
@@ -66,46 +99,77 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
     if (expandedIndex !== null) overlayRef.current?.focus();
   }, [expandedIndex]);
 
+  /* Idle prefetch destination pages (won’t rush critical path) */
+  useEffect(() => {
+    if (!items?.length) return;
+    const idle = window.requestIdleCallback?.bind(window) || ((cb) => setTimeout(cb, 1500));
+    const cancel = window.cancelIdleCallback?.bind(window) || clearTimeout;
+
+    const id = idle(() => {
+      items.forEach((i) => {
+        if (i?.page) {
+          try {
+            router.prefetch?.(i.page);
+          } catch {}
+        }
+      });
+    });
+
+    return () => cancel(id);
+  }, [items, router]);
+
+  /* Stable callbacks to reduce child re-renders */
+  const handleExpand = useCallback((i) => {
+    setCursorVisible(false);
+    setExpandedIndex(i);
+  }, []);
+
+  const bgStyle = useMemo(
+    () => ({
+      backgroundColor: bg,
+      transition: "background-color 300ms ease",
+      cursor: "auto",
+    }),
+    [bg]
+  );
+
+  /* Only set video src when overlay is open (preload=none) */
+  const activeVideoSrc = expandedIndex !== null ? items[expandedIndex]?.src : undefined;
+
   return (
     <section
       className="relative isolate z-[200] overflow-visible"
-      aria-labelledby="case-studies-title "
+      aria-labelledby="case-studies-title"
       style={{ minHeight: "0px" }}
     >
-
-
       {/* Content layer */}
-    <div className="relative -mt-[60vh]">
-        <div
-          ref={null}
-          className="w-full h-fit gap-9 pointer-events-auto"
-          style={{
-            backgroundColor: bg,
-            transition: "background-color 400ms ease",
-            cursor: "auto",
-          }}
-        >
-          <Navbar />
+      <div className="relative -mt-[60vh]">
+        <div className="w-full h-fit gap-9 pointer-events-auto" style={bgStyle}>
+          {/* Navbar lazily hydrated */}
+          <Suspense fallback={null}>
+            <Navbar />
+          </Suspense>
 
+          {/* Cards: mount only when near viewport, and hydrate lazily */}
           {items.map((info, idx) => (
-            <CaseCard
-            noBlank={noBlank}
-              key={idx}
-              linkAll
-              SPRING={SPRING}
-              idx={idx}
-              info={info}
-              setActiveColor={setBg}
-              cursorVisible={cursorVisible}
-              cursorPos={cursorPos}
-              setCursorVisible={setCursorVisible}
-              setCursorPos={setCursorPos}
-              expandedIndex={expandedIndex}
-              onExpand={(i) => {
-                setCursorVisible(false);
-                setExpandedIndex(i);
-              }}
-            />
+            <ViewMount key={idx} rootMargin="400px">
+              <Suspense fallback={null}>
+                <CaseCardLazy
+                  noBlank={noBlank}
+                  linkAll
+                  SPRING={SPRING}
+                  idx={idx}
+                  info={info}
+                  setActiveColor={setBg}
+                  cursorVisible={cursorVisible}
+                  cursorPos={cursorPos}
+                  setCursorVisible={setCursorVisible}
+                  setCursorPos={setCursorPos}
+                  expandedIndex={expandedIndex}
+                  onExpand={handleExpand}
+                />
+              </Suspense>
+            </ViewMount>
           ))}
         </div>
       </div>
@@ -124,12 +188,9 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{
-              duration: reduceMotion ? 0 : OVERLAY_MS / 1000,
-            }}
+            transition={{ duration: reduceMotion ? 0 : OVERLAY_MS / 1000 }}
             style={{ background: "rgba(0,0,0,0.6)" }}
             onClick={(e) => {
-              // Click outside video closes overlay
               if (e.target === e.currentTarget) setExpandedIndex(null);
             }}
             onAnimationComplete={() => {
@@ -138,13 +199,18 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
                 const link = items[expandedIndex]?.page;
                 if (!navigatedRef.current && link) {
                   navigatedRef.current = true;
+                  // navigation happens after fade-in completes (feels instant to user)
+                  // if you prefer to wait a tick, wrap in requestAnimationFrame
+                  // requestAnimationFrame(() => router.push(link));
                   router.push(link);
                 }
               }
             }}
           >
             <motion.video
-              src={items[expandedIndex]?.src}
+              /* Delay network request until overlay opens */
+              src={activeVideoSrc}
+              preload="none"
               autoPlay
               muted
               loop
@@ -160,10 +226,10 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
               initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
-              transition={{
-                duration: reduceMotion ? 0 : OVERLAY_MS / 1000,
-                ease: "easeOut",
-              }}
+              transition={{ duration: reduceMotion ? 0 : OVERLAY_MS / 1000, ease: "easeOut" }}
+              /* keep CPU/GPU cooler on low-power devices */
+              disablePictureInPicture
+              controls={false}
             />
             <button
               type="button"
