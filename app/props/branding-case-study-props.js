@@ -53,7 +53,7 @@ const websiteCaseStudyProps = [
     {
     video: true,
     page: "/work/viderna",
-    color: "#CBB9D5",
+    color: "#C1D5B9",
     companyName: "Viderna",
     projectLink: "/viderna-brand-positioning.pdf",
     desc: "Brand Positioning",
