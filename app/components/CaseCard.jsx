@@ -5,23 +5,10 @@ import {
   useScroll,
   useSpring,
   useTransform,
-  useInView,
 } from "framer-motion";
 import Image from "next/image";
-import React, { memo, useCallback, useMemo, useRef, useState, useEffect } from "react";
+import React, { memo, useRef } from "react";
 import TextCursor from "./TextCursor";
-
-function useReducedMotionPref() {
-  const [prefers, setPrefers] = useState(false);
-  useEffect(() => {
-    const m = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const on = () => setPrefers(!!m.matches);
-    on();
-    m.addEventListener?.("change", on);
-    return () => m.removeEventListener?.("change", on);
-  }, []);
-  return prefers;
-}
 
 const CaseCard = memo(function CaseCard({
   info = {},
@@ -38,146 +25,89 @@ const CaseCard = memo(function CaseCard({
   linkAll = false,
 }) {
   const ref = useRef(null);
-  const reduce = useReducedMotionPref();
 
-  /* ---- Scroll-driven polish (cheaper with reduced motion) ---- */
+  /* ---- Scroll-driven polish ---- */
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start 0.7", "end 0.3"],
   });
 
-  const opacity = useSpring(
-    useTransform(scrollYProgress, [0, 0.8, 1], [1, 1, reduce ? 1 : 0]),
-    SPRING
-  );
-  const scale = useSpring(
-    useTransform(scrollYProgress, [0, 0.8, 1], [1, 1, reduce ? 1 : 0.98]),
-    SPRING
-  );
-  const blurPx = useSpring(
-    useTransform(scrollYProgress, [0, 0.8, 1], [0, 0, reduce ? 0 : 8]),
-    SPRING
-  );
+  const opacity = useSpring(useTransform(scrollYProgress, [0, 0.8, 1], [1, 1, 0]), SPRING);
+  const scale = useSpring(useTransform(scrollYProgress, [0, 0.8, 1], [1, 1, 0.98]), SPRING);
+  const blurPx = useSpring(useTransform(scrollYProgress, [0, 0.8, 1], [0, 0, 8]), SPRING);
   const filter = useMotionTemplate`blur(${blurPx}px)`;
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     if (v > 0.35 && v < 0.65 && info.color) setActiveColor?.(info.color);
   });
 
-  /* ---- Media kind ---- */
+  /* ---- Derive state ---- */
   const isVideo = Boolean(info.video || info.src?.endsWith?.(".mp4"));
-  const videoSrcRaw = info.src || info.video || "";
   const href = info.page || info.link || "";
   const isEdge = info.firstIndex || info.lastIndex;
   const showCursorForThisCard = linkAll || isEdge;
   const cursorActive = cursorVisible && expandedIndex === null && showCursorForThisCard;
 
-  /* ---- Viewport + interaction-gated video loading ---- */
-  const inView = useInView(ref, { margin: "200px 0px 200px 0px", amount: 0.1 });
-  const [wantsVideo, setWantsVideo] = useState(false); // set true on hover/focus/click
-  const shouldLoadVideo = isVideo && (inView || wantsVideo); // only then attach src
+  /* ---- Common handlers ---- */
+  const onEnter = () => setCursorVisible?.(showCursorForThisCard);
+  const onLeave = () => setCursorVisible?.(false);
+  const onMove = (e) =>
+    showCursorForThisCard && setCursorPos?.({ x: e.clientX, y: e.clientY });
 
-  // play/pause when entering/leaving viewport
-  useEffect(() => {
-    if (!isVideo) return;
-    const el = ref.current?.querySelector("video");
-    if (!el) return;
-    if (inView) {
-      // only play if we already loaded/gated it
-      shouldLoadVideo && el.play?.();
-    } else {
-      el.pause?.();
-    }
-  }, [isVideo, inView, shouldLoadVideo]);
-
-  /* ---- Handlers (stable) ---- */
-  const onEnter = useCallback(() => {
-    setCursorVisible?.(showCursorForThisCard);
-    if (isVideo) setWantsVideo(true);
-  }, [setCursorVisible, showCursorForThisCard, isVideo]);
-
-  const onLeave = useCallback(() => setCursorVisible?.(false), [setCursorVisible]);
-
-  const onMove = useCallback(
-    (e) => showCursorForThisCard && setCursorPos?.({ x: e.clientX, y: e.clientY }),
-    [showCursorForThisCard, setCursorPos]
-  );
-
-  const onClickExpand = useCallback(() => {
-    if (isVideo) {
-      setWantsVideo(true);
-      onExpand?.(idx);
-    }
-  }, [isVideo, idx, onExpand]);
-
-  /* ---- A11y & meta ---- */
   const imgAlt = info.companyName ? `${info.companyName} case study` : "Case study image";
   const titleId = `casecard-title-${idx}`;
   const descId = `casecard-desc-${idx}`;
-
-  /* ---- Media nodes ---- */
-  const mediaNode = isVideo ? (
-    <motion.video
-      // gate src until needed to avoid immediate network hit
-      src={shouldLoadVideo ? videoSrcRaw : undefined}
-      data-src={videoSrcRaw}
-      className="w-full h-auto block"
-      autoPlay
-      muted
-      loop
-      playsInline
-      // don't prebuffer
-      preload="none"
-      // cheaper animation when reduced motion is on
-      style={{ willChange: reduce ? "auto" : "transform, opacity" }}
-    />
-  ) : (
-    <Image
-      src={info.image}
-      width={1247}
-      height={669}
-      className="w-full h-auto"
-      alt={imgAlt}
-      sizes="(min-width:1024px) 80vw, 100vw"
-      priority={false}
-      loading="lazy"
-      decoding="async"
-    />
-  );
 
   return (
     <motion.article
       ref={ref}
       aria-labelledby={titleId}
       aria-describedby={isVideo ? descId : undefined}
-      style={{ opacity, scale, filter, willChange: reduce ? "auto" : "opacity, transform, filter" }}
+      style={{ opacity, scale, filter, willChange: "opacity, transform, filter" }}
       className="w-full dynamic-padding flex flex-col gap-4"
-      onFocus={onEnter}
-      onBlur={onLeave}
     >
       {/* Media + Link/Action */}
       {href ? (
         <a
           href={cursorActive ? href : undefined}
           target={noBlank && "_blank"}
-          rel={noBlank ? "noopener noreferrer" : undefined}
           className={`relative block w-full ${cursorActive ? "cursor-pointer" : "cursor-default"}`}
           onMouseEnter={onEnter}
           onMouseLeave={onLeave}
           onMouseMove={onMove}
-          onPointerDown={() => isVideo && setWantsVideo(true)}
           aria-label={info.companyName ? `Open ${info.companyName} case study` : "Open case study"}
         >
-          {mediaNode}
+          {isVideo ? (
+            <motion.video
+              src={info.src || info.video}
+              className="w-full h-auto block"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          ) : (
+            <Image
+              src={info.image}
+              width={1247}
+              height={669}
+              className="w-full h-auto"
+              alt={imgAlt}
+              sizes="(min-width:1024px) 80vw, 100vw"
+              priority={false}
+            />
+          )}
         </a>
       ) : (
         <button
           type="button"
-          onClick={onClickExpand}
+          onClick={(e) => {
+            // Only expand when this card actually shows a video
+            if (isVideo) onExpand?.(idx);
+          }}
           onMouseEnter={onEnter}
           onMouseLeave={onLeave}
           onMouseMove={onMove}
-          onPointerDown={() => isVideo && setWantsVideo(true)}
           className="relative block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-black/50 rounded-lg"
           aria-label={
             isVideo
@@ -187,7 +117,26 @@ const CaseCard = memo(function CaseCard({
               : imgAlt
           }
         >
-          {mediaNode}
+          {isVideo ? (
+            <motion.video
+              src={info.src || info.video}
+              className="w-full h-auto block"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          ) : (
+            <Image
+              src={info.image}
+              width={1247}
+              height={669}
+              className="w-full h-auto"
+              alt={imgAlt}
+              sizes="(min-width:1024px) 80vw, 100vw"
+              priority={false}
+            />
+          )}
         </button>
       )}
 
