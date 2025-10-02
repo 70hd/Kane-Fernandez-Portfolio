@@ -122,8 +122,42 @@ function PinnedIntro({ hover, setHover }) {
           style={{ opacity: aboutOpacity, y: aboutY, pointerEvents: aboutPE, zIndex: aboutZ }}
           className="absolute inset-0 flex items-center justify-center will-change-transform transform-gpu"
         >
-          <article className="max-w-[630px] px-3 text-center w-full flex flex-col dynamic-gap-3">
-            {/* ... your about content ... */}
+           <article className="max-w-[630px] px-3 text-center w-full flex flex-col dynamic-gap-3">
+            <p>
+              Kane Fernandez is a 15-year-old web designer and developer who
+              creates high-end sites for small businesses. He’s been mentored by{" "}
+              <a
+                href="https://www.linkedin.com/in/ryandavidholmes"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-[.1px]"
+              >
+                Ryan Holmes (Postscript)
+              </a>
+              , <br />
+              <a
+                href="https://www.linkedin.com/in/asjohnson"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-[.1px]"
+              >
+                Andy Johnson (Uniteddsn)
+              </a>
+              , and{" "}
+              <a
+                href="https://www.linkedin.com/in/wittmer/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-[.1px]"
+              >
+                Dan Wittmer (YouTube)
+              </a>
+              .<br />
+              Have an idea?{" "}
+              <a href="mailto:kanehfernandez@gmail.com" className="underline decoration-[.1px]">
+                Get in touch
+              </a>
+            </p>
           </article>
         </motion.div>
 
