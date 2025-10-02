@@ -87,15 +87,7 @@ const websiteCaseStudyProps = [
         cursorText: "View Brand Positioning",
       },
       {
-        image: "/viderna-presentation-5.png",
-        cursorText: "View Brand Positioning",
-      },
-      {
         image: "/viderna-presentation-6.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-7.png",
         cursorText: "View Brand Positioning",
       },
         {
