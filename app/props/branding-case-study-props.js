@@ -73,6 +73,23 @@ const websiteCaseStudyProps = [
         link: "/viderna-brand-positioning.pdf",
         cursorText: "View Brand Positioning",
           firstIndex: true
+      }
+      ,
+        {
+        image: "/viderna-presentation-15.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-16.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-17.png",
+        cursorText: "View Brand Positioning",
+      },
+        {
+        image: "/viderna-presentation-18.png",
+        cursorText: "View Brand Positioning",
       },
       {
         image: "/viderna-presentation-2.png",
@@ -116,22 +133,6 @@ const websiteCaseStudyProps = [
       },
         {
         image: "/viderna-presentation-14.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-15.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-16.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-17.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-18.png",
         cursorText: "View Brand Positioning",
       },
 
