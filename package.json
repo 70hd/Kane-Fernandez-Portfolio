@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.33.3",
     "@studio-freight/lenis": "^1.0.42",
     "@vercel/analytics": "^1.5.0",
     "framer-motion": "^12.23.12",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/node": "24.7.0",
     "eslint": "^9",
     "eslint-config-next": "15.4.7",
     "tailwindcss": "^4"

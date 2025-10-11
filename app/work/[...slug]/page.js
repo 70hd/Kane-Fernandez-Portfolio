@@ -2,10 +2,10 @@
 "use client";
 
 import { useRef, useState, useEffect, useLayoutEffect } from "react";
-import NoPageFound from "@/app/not-found";
-import websiteCaseStudyProps from "@/app/props/website-case-study-props";
-import brandingCaseStudyProps from "@/app/props/branding-case-study-props";
-import CaseStudy from "@/app/components/CaseStudy";
+import NoPageFound from "../../not-found"
+import websiteCaseStudyProps from "../../props/website-case-study-props";
+import brandingCaseStudyProps from "../../props/branding-case-study-props";
+import CaseStudy from "../../components/CaseStudy";
 import { motion, useSpring, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
 

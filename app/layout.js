@@ -1,7 +1,15 @@
-import "./globals.css";
+import {
+  ClerkProvider,
+} from "@clerk/nextjs";
 import { Suspense } from "react";
-import SmoothScroll from "./components/SmoothScroll"; // client component
-import { Analytics } from "@vercel/analytics/next"
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import SmoothScroll from "./components/SmoothScroll";
+import { Analytics } from "@vercel/analytics/next";
+import AuthHeader from "./components/AuthHeader";
+
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata = {
   title: "Kane Fernandez",
@@ -11,14 +19,20 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="antialiased" suppressHydrationWarning>
-        <Suspense fallback={null}>
-          <SmoothScroll />
-        </Suspense>
-        {children}
+   <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
+          {/* This header will render only on /subscription */}
+          <AuthHeader />
+
+          <Suspense fallback={null}>
+            <SmoothScroll />
+          </Suspense>
+
+          {children}
           <Analytics />
-      </body>
-    </html>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
