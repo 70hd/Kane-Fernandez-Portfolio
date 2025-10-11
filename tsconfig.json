@@ -24,11 +24,11 @@
     ]
   },
   "include": [
-    "next-env.d.ts",
+    "next-env.d.js",
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "middleware.js"  ],
   "exclude": [
     "node_modules"
   ]
