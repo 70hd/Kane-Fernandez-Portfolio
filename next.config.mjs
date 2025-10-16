@@ -7,12 +7,12 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        // Anything under /__clerk/* goes to Clerk's Frontend API
-        source: '/__clerk/:path*',
-        destination: 'https://frontend-api.clerk.services/:path*',
+        // Proxy Clerk Frontend API
+        source: "/__clerk/:path*",
+        destination: "https://frontend-api.clerk.services/:path*",
       },
     ];
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig; // ✅ ESM export for .mjs
