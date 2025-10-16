@@ -237,7 +237,7 @@
 export const dynamic = "force-dynamic";
 
 import React, { useMemo } from "react";
-import { useUser, SignedIn, SignedOut } from "@clerk/nextjs";
+import { useUser, SignedIn, SignedOut, PricingTable } from "@clerk/nextjs";
 import { CheckoutButton, SubscriptionDetailsButton } from "@clerk/nextjs/experimental";
 import Link from "next/link";
 
@@ -298,8 +298,10 @@ export default function Subscription() {
 
   return (
     <div className="w-full h-fit flex flex-col gap-9 dynamic-padding">
+        <PricingTable />
       <div className="flex items-center justify-between">
         <h2>Subscription Offerings</h2>
+      
 
         <SignedIn>
           <SubscriptionDetailsButton>
