@@ -205,8 +205,8 @@ function DownArrows() {
       aria-hidden="true"
     >
       {/* tiny SVGs: use <img> to avoid Next/Image overhead */}
-      <img src="/downward-arrow.svg" width={55} height={36} alt="" loading="lazy" decoding="async" />
-      <img src="/downward-arrow.svg" width={55} height={36} alt="" loading="lazy" decoding="async" />
+      <Image src="/downward-arrow.svg" width={55} height={36} alt="" loading="lazy" decoding="async" />
+      <Image src="/downward-arrow.svg" width={55} height={36} alt="" loading="lazy" decoding="async" />
     </motion.div>
   );
 }
