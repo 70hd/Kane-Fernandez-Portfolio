@@ -237,7 +237,7 @@
 export const dynamic = "force-dynamic";
 
 import React, { useMemo } from "react";
-import { useUser, SignedIn, SignedOut } from "@clerk/nextjs";
+import { useUser, SignedIn, SignedOut, PricingTable } from "@clerk/nextjs";
 import { CheckoutButton, SubscriptionDetailsButton } from "@clerk/nextjs/experimental";
 import Link from "next/link";
 
@@ -323,6 +323,7 @@ export default function Subscription() {
       </div>
 
       <div className="w-fit flex gap-9">
+        <PricingTable/>
         {TIERS.map((tier, idx) => {
           const isFeatured = idx === 1;
           const isCurrent = activePlan === tier.slug;
