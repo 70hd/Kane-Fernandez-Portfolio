@@ -239,6 +239,7 @@ export const dynamic = "force-dynamic";
 import React, { useMemo } from "react";
 import { useUser, SignedIn, SignedOut } from "@clerk/nextjs";
 import { CheckoutButton, SubscriptionDetailsButton } from "@clerk/nextjs/experimental";
+import Link from "next/link";
 
 /* ---------- Plan IDs ---------- */
 const PLAN_IDS = {
@@ -312,12 +313,12 @@ export default function Subscription() {
         </SignedIn>
 
         <SignedOut>
-          <a
+          <Link
             href="/sign-in"
             className="px-4 py-2 rounded-lg border border-white text-white hover:bg-white hover:text-black"
           >
             Sign in to manage
-          </a>
+          </Link>
         </SignedOut>
       </div>
 
@@ -371,7 +372,7 @@ export default function Subscription() {
               </SignedIn>
 
               <SignedOut>
-                <a
+                <Link
                   href="/sign-in"
                   className={`block w-full text-center px-6 py-3 rounded-lg ${
                     isFeatured
@@ -380,7 +381,7 @@ export default function Subscription() {
                   }`}
                 >
                   Subscribe
-                </a>
+                </Link>
               </SignedOut>
 
               <div className="flex flex-col gap-3">
