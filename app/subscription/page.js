@@ -237,15 +237,15 @@
 export const dynamic = "force-dynamic";
 
 import React, { useMemo } from "react";
-import { useUser, SignedIn, SignedOut, PricingTable } from "@clerk/nextjs";
+import { useUser, SignedIn, SignedOut } from "@clerk/nextjs";
 import { CheckoutButton, SubscriptionDetailsButton } from "@clerk/nextjs/experimental";
 import Link from "next/link";
 
 /* ---------- Plan IDs ---------- */
 const PLAN_IDS = {
-  basic: "cplan_33o88OR1VcaE2EALF8oFuX5g5ay",
-  standard: "cplan_33o8KlNt1FxkTT8KGxCPJuCV9XG",
-  support: "cplan_33o8ZLTsHj9uJ15mtRhDDAaCzNR",
+  basic: "cplan_33tsdlMQyKM1Z1h3ZV8yldyLblI",
+  standard: "cplan_33tsdfEBovQIOcuxJbHe5okdwKR",
+  support: "cplan_33tsdhp0fTZ3ozIGDi3w3wbBjB8",
 };
 
 const TIERS = [
@@ -323,7 +323,6 @@ export default function Subscription() {
       </div>
 
       <div className="w-fit flex gap-9">
-        <PricingTable/>
         {TIERS.map((tier, idx) => {
           const isFeatured = idx === 1;
           const isCurrent = activePlan === tier.slug;
