@@ -7,6 +7,7 @@ import { useUser, SignedIn, SignedOut, CheckoutButton, PricingTable } from "@cle
 import {
   SubscriptionDetailsButton,
 } from "@clerk/nextjs/experimental";
+import Link from "next/link";
 
 /* ---------- Config (test vs live IDs must match your environment) ---------- */
 const PLAN_IDS = {
@@ -88,12 +89,12 @@ export default function Subscription() {
         </SignedIn>
 
         <SignedOut>
-          <a
+          <Link
             href="/sign-in"
          className="px-4 py-2 rounded-lg border border-white text-white hover:bg-white hover:text-black"
           >
             Sign in to manage
-          </a>
+          </Link>
         </SignedOut>
       </div>
 
