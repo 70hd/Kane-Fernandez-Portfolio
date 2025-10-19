@@ -3,7 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import React from "react";
-import { useUser, SignedIn, SignedOut, CheckoutButton } from "@clerk/nextjs";
+import { useUser, SignedIn, SignedOut, CheckoutButton, PricingTable } from "@clerk/nextjs";
 import {
   SubscriptionDetailsButton,
 } from "@clerk/nextjs/experimental";
