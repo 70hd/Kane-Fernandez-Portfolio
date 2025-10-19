@@ -209,7 +209,7 @@ export default function Subscription() {
               </SignedIn>
 
               <SignedOut>
-                <a
+                <Link
                   href="/sign-in"
                   className={`block w-full text-center px-6 py-3 rounded-lg ${
                     isFeatured
@@ -218,7 +218,7 @@ export default function Subscription() {
                   }`}
                 >
                   Subscribe
-                </a>
+                </Link>
               </SignedOut>
 
               <div className="flex flex-col gap-3">
