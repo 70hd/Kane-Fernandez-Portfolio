@@ -4,6 +4,7 @@ export default function SignInPage() {
   return (
     <main className="min-h-[70vh] grid place-items-center p-6 bg-black">
       <SignIn
+            afterSignInUrl="/subscription"
         appearance={{
           variables: {
             colorBackground: "#121212",

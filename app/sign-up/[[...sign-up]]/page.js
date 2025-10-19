@@ -6,7 +6,7 @@ export default function SignUpPage() {
   return (
     <main className="min-h-[70vh] grid place-items-center p-6">
       <SignUp
-        afterSignUpUrl="/"
+        afterSignUpUrl="/subscription"
         signInUrl="/sign-in"
         appearance={{
           variables: {
