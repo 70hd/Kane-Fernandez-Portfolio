@@ -298,7 +298,6 @@ export default function Subscription() {
 
   return (
     <div className="w-full h-fit flex flex-col gap-9 dynamic-padding">
-        <PricingTable />
       <div className="flex items-center justify-between">
         <h2>Subscription Offerings</h2>
       
