@@ -249,7 +249,7 @@ const PLAN_IDS = {
 };
 
 const TIERS = [
-  { title: "Basic", slug: "basic", price: "20", features: [
+  { title: "Basic", slug: "basic", price: "30", features: [
     "Ongoing content updates",
     "Layout adjustments & section tweaks",
     "Navigation/menu link updates",
@@ -281,12 +281,12 @@ export default function Subscription() {
   const { isLoaded, user } = useUser();
 
   // whatever you store in publicMetadata.activePlan (e.g., "basic"|"standard"|"support")
-  // const activePlan = useMemo(() => {
-  //   const raw = user?.publicMetadata?.activePlan;
-  //   return raw ? String(raw).toLowerCase() : null;
-  // }, [user?.publicMetadata?.activePlan]);
-  const activePlan = false
+  const activePlan = useMemo(() => {
+    const raw = user?.publicMetadata?.activePlan;
+    return raw ? String(raw).toLowerCase() : null;
+  }, [user?.publicMetadata?.activePlan]);
 
+console.log(activePlan)
   if (!isLoaded) {
     return (
       <div className="dynamic-padding">
