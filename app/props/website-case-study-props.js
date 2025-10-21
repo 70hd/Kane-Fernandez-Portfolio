@@ -1,3 +1,183 @@
+// // was: export default [ ... ];
+// const websiteCaseStudyProps = [
+//   {
+//     video: true,
+//     page: "/work/thelittlechihuahua",
+//     color: "#C1D5B9",
+//     companyName: "The Little Chihuahua",
+//     desc: "Design/Development",
+//     companyLogo: "/tlc-logo.svg",
+//     projectDescription:
+//       "A clean, high-converting website with email automation that clearly represents The Little Chihuahua brand.",
+//     src: "/tlc-showreel.mp4",
+//     ctaText: "website",
+//     projectLink: "https://www.thelittlechihuahuamerch.com/",
+//     timeLineImages: [
+//       {
+//         title: "Process & Pipeline",
+//         description:
+//           "Started with brand-aligned design, built conversion-focused components, developed accessible UX, integrated email automation, and optimized for performance.",
+//       },
+//       { image: ["/tlc-before-after.png"], text: "Website Design" },
+//       {
+//         image: [
+//           "/tlc-merch-development-website-image1.png",
+//           "/tlc-merch-development-website-image2.png",
+//         ],
+//         text: "Website Developement",
+//       },
+//       { image: ["/tlc-merch-email-design-image.png"], text: "Email Design" },
+//       {
+//         image: ["/tlc-merch-email-automation-image.png"],
+//         text: "Email Automation",
+//       },
+//     ],
+//     testimonialText:
+//       "Kane Fernandez [img0] totally leveled up [img1] our merch site—fast, modern, [img2] and spot on. ",
+//     testimonialImages: [
+//       "/tlc-testimonial-image-0.png",
+//       "/tlc-testimonial-image-1.png",
+//       "/tlc-testimonial-image-2.png",
+//     ],
+//     testimonialAuthor: "Andrew Johnstone",
+//   },
+//   {
+//     video: true,
+//     page: "/work/everlane",
+//     companyLogo: "/everlane-logo.svg",
+//     ctaText: "website",
+//     projectLink: "https://everlane-spec-project.vercel.app/",
+//     projectDescription:
+//       "Designed and built a responsive ecommerce site with login, saved carts, wishlists, popups, animations, product filtering, smart search, and a searchable FAQ with 50+ answers—all powered by a MySQL database.",
+//     color: "#FFECD4",
+//     companyName: "Everlane Spec",
+//     desc: "Design/Development",
+//     src: "/everlane-showreel.mp4",
+//     timeLineImages: [
+//       {
+//         title: "Process & Timeline",
+//         description:
+//           "Kicked off on June 5, 2025 with deep research into Everlane, competitors, and audience; then designed user-minded, component-driven UI, built an operational e-commerce stack with auth and product storage, solved pre-login data sync post-login, tuned performance & accessibility, and launched.",
+//       },
+//       {
+//         image: [
+//           "/everlane-spec-component-1.png",
+//           "/everlane-spec-component-2.png",
+//         ],
+//         text: "Component Design",
+//       },
+//       { image: ["/everlane-spec-create-account.png"], text: "Functionality" },
+
+//       { image: ["/everlane-spec-before-after.png"], text: "Final Launch" },
+//     ],
+//     testimonialText:
+//       "Kane shows impressive drive [img2], skill [img1], and awareness [img0] building complex web solutions.",
+//     testimonialImages: ["/everlane-testimonial-image-0.png", "/everlane-testimonial-image-1.png", "/everlane-testimonial-image-2.png"],
+//     testimonialAuthor: "Dan Wittmer",
+//   },
+//   {
+//     video: true,
+//     page: "/work/reframepilates",
+//     color: "#B9D0D5",
+//     projectLink:
+//       "https://www.figma.com/design/bQhpXStiS91O7HrvQEqCD2/RE-FRAME-PILATES-WEBISTE?node-id=0-1&p=f",
+//     companyLogo: "/reframe-pilates-logo.svg",
+//     projectDescription:
+//       "Natalie Gabellone, the founder of Reframe Pilates, reached out to me for a full website redesign and development. After careful consideration, we decided to focus solely on system design.",
+//     companyName: "Reframe Pilates",
+//     desc: "Design System",
+//     ctaText: "website",
+//     src: "/reframe-pilates-showreel.mp4",
+//     timeLineImages: [
+//       {
+//         title: "Process",
+//         description:
+//           "We started with goal alignment, set milestones via a Gantt chart, iterated design system components, refined to brand needs, and finalized a scalable UI system.",
+//       },
+//       { image: ["/reframe-pilates-zoom-call.png"], text: "Initial Call" },
+//       {
+//         image: [
+//           "/reframe-pilates-thumbnail.png",
+//           "/reframe-pilates-subscription-module.png",
+//         ],
+//         text: "First Design System Iteration Created",
+//       },
+//       {
+//         image: ["/reframe-pilates-design-system-refinement.png"],
+//         text: "Refined to clients needs",
+//       },
+//       {
+//         image: ["/reframe-pilates-final-design-system.png"],
+//         text: "Finalized New Design System",
+//       },
+//     ],
+//     testimonialText:
+//       "Kane [img0] is a warm and friendly [img2] person with [img1] clearly a passion and sincere desire.",
+//     testimonialImages: [
+//       "/reframe-pilates-testimonial-image-0.png",
+//       "/reframe-pilates-testimonial-image-1.png",
+//       "/reframe-pilates-testimonial-image-2.png",
+//     ],
+//     testimonialAuthor: "Natalie Gabellone",
+//   },
+//     {
+//     video: true,
+//     page: "/work/komakase",
+//     color: "#CBB9D5",
+//     projectLink:
+//       "https://komakase.coffee/",
+//     companyLogo: "/komakase-logo.svg",
+//     projectDescription:
+//       "I partnered with Komakase to build a high-converting Shopify website featuring subscriptions and custom functionality, while redesigning their typography and brand colors to create a modern site aligned with their brand identity—achieving nearly a 7% conversion rate on day one.",
+//     companyName: "Komakase",
+//     desc: "Design/Development",
+//     ctaText: "website",
+//     src: "/komakase-showreel.mp4",
+//     timeLineImages: [
+//       {
+//         title: "Process",
+//         description:
+//           "We began with a vision to build a seamless coffee subscription system while elevating the overall look and feel of their existing website.",
+//       },
+//         {
+//         image: [
+//           "/komakase-competetor-reasearch-1.png",
+//           "/komakase-competetor-reasearch-2.png",
+//         ],
+//         text: "Competitor Research",
+//       },
+//       { image: ["/shopify-themes.png"], text: "Shopify Theme Reasearch" },
+//       {
+//         image: [
+//           "/komakase-imagry-1.png",
+//           "/komakase-imagry-2.png",
+//         ],
+//         text: "Komakase Imagery Selection",
+//       },
+//       {
+//         image: ["/shopify-liquid.png"],
+//         text: "Shopify Theme Customization",
+//       },
+//       {
+//         image: ["/komakse-final-webiste-comparison.png"],
+//         text: "Finalized New Design System",
+//       },
+//       {
+//         image: ["/komakase-a-1.png","/komakase-a-2.png"],
+//         text: "Analytics",
+//       },
+//     ],
+//     testimonialText:
+//       "Kane [img0] is professional and communicative [img2], with [img1] clear passion—a pleasure to work with; highly recommended.",
+//     testimonialImages: [
+//       "/komakase-testimonial-image-0.jpg",
+//       "/komakase-testimonial-image-1.jpg",
+//       "/komakase-testimonial-image-2.jpg",
+//     ],
+//     testimonialAuthor: "Josh D'esposito",
+//   },
+// ];
+// export default websiteCaseStudyProps;
 // was: export default [ ... ];
 const websiteCaseStudyProps = [
   {
@@ -5,10 +185,10 @@ const websiteCaseStudyProps = [
     page: "/work/thelittlechihuahua",
     color: "#C1D5B9",
     companyName: "The Little Chihuahua",
-    desc: "Design/Development",
+    desc: "Branding / Website Design / Development",
     companyLogo: "/tlc-logo.svg",
     projectDescription:
-      "A clean, high-converting website with email automation that clearly represents The Little Chihuahua brand.",
+      "A clean, high-converting website with integrated email automation that clearly represents The Little Chihuahua brand. This project focused on branding and website design for a small business restaurant in San Francisco, with optimized UX and modern development.",
     src: "/tlc-showreel.mp4",
     ctaText: "website",
     projectLink: "https://www.thelittlechihuahuamerch.com/",
@@ -16,24 +196,23 @@ const websiteCaseStudyProps = [
       {
         title: "Process & Pipeline",
         description:
-          "Started with brand-aligned design, built conversion-focused components, developed accessible UX, integrated email automation, and optimized for performance.",
+          "Started with brand-aligned design, built conversion-focused website components, developed accessible UX, integrated email automation, and optimized for performance—tailored for a small business in the Bay Area food scene.",
       },
-      { image: ["/tlc-before-after.png"], text: "Website Design" },
+      { image: ["/tlc-before-after.png"], text: "Restaurant Website Design" },
       {
         image: [
           "/tlc-merch-development-website-image1.png",
           "/tlc-merch-development-website-image2.png",
         ],
-        text: "Website Developement",
-      },
-      { image: ["/tlc-merch-email-design-image.png"], text: "Email Design" },
+        text: "Website Development for Small Business" },
+      { image: ["/tlc-merch-email-design-image.png"], text: "Email Marketing Design" },
       {
         image: ["/tlc-merch-email-automation-image.png"],
-        text: "Email Automation",
+        text: "Email Automation for Restaurants",
       },
     ],
     testimonialText:
-      "Kane Fernandez [img0] totally leveled up [img1] our merch site—fast, modern, [img2] and spot on. ",
+      "Kane Fernandez [img0] totally leveled up [img1] our San Francisco restaurant merch site—fast, modern, [img2] and spot on for our brand identity.",
     testimonialImages: [
       "/tlc-testimonial-image-0.png",
       "/tlc-testimonial-image-1.png",
@@ -48,31 +227,34 @@ const websiteCaseStudyProps = [
     ctaText: "website",
     projectLink: "https://everlane-spec-project.vercel.app/",
     projectDescription:
-      "Designed and built a responsive ecommerce site with login, saved carts, wishlists, popups, animations, product filtering, smart search, and a searchable FAQ with 50+ answers—all powered by a MySQL database.",
+      "Designed and built a responsive ecommerce website with login, saved carts, wishlists, popups, animations, product filtering, smart search, and a searchable FAQ with 50+ answers—all powered by a MySQL database. This project showcases full-stack web design and development for a modern ecommerce brand.",
     color: "#FFECD4",
     companyName: "Everlane Spec",
-    desc: "Design/Development",
+    desc: "Website Design / Development",
     src: "/everlane-showreel.mp4",
     timeLineImages: [
       {
         title: "Process & Timeline",
         description:
-          "Kicked off on June 5, 2025 with deep research into Everlane, competitors, and audience; then designed user-minded, component-driven UI, built an operational e-commerce stack with auth and product storage, solved pre-login data sync post-login, tuned performance & accessibility, and launched.",
+          "Started with deep research into Everlane, competitors, and their audience. Designed user-minded, component-driven UI and built an operational ecommerce stack with authentication and product storage. Solved pre-login data sync post-login, tuned performance & accessibility, and launched a modern ecommerce design.",
       },
       {
         image: [
           "/everlane-spec-component-1.png",
           "/everlane-spec-component-2.png",
         ],
-        text: "Component Design",
+        text: "Component-Based Web Design",
       },
-      { image: ["/everlane-spec-create-account.png"], text: "Functionality" },
-
-      { image: ["/everlane-spec-before-after.png"], text: "Final Launch" },
+      { image: ["/everlane-spec-create-account.png"], text: "Website Functionality" },
+      { image: ["/everlane-spec-before-after.png"], text: "Final Ecommerce Launch" },
     ],
     testimonialText:
-      "Kane shows impressive drive [img2], skill [img1], and awareness [img0] building complex web solutions.",
-    testimonialImages: ["/everlane-testimonial-image-0.png", "/everlane-testimonial-image-1.png", "/everlane-testimonial-image-2.png"],
+      "Kane shows impressive drive [img2], technical skill [img1], and design awareness [img0] when building complex ecommerce web solutions.",
+    testimonialImages: [
+      "/everlane-testimonial-image-0.png",
+      "/everlane-testimonial-image-1.png",
+      "/everlane-testimonial-image-2.png",
+    ],
     testimonialAuthor: "Dan Wittmer",
   },
   {
@@ -83,36 +265,36 @@ const websiteCaseStudyProps = [
       "https://www.figma.com/design/bQhpXStiS91O7HrvQEqCD2/RE-FRAME-PILATES-WEBISTE?node-id=0-1&p=f",
     companyLogo: "/reframe-pilates-logo.svg",
     projectDescription:
-      "Natalie Gabellone, the founder of Reframe Pilates, reached out to me for a full website redesign and development. After careful consideration, we decided to focus solely on system design.",
+      "Natalie Gabellone, the founder of Reframe Pilates, needed a full website redesign and development. We focused on branding through a scalable design system to support long-term growth. This case study highlights branding and website design for a Bay Area wellness business.",
     companyName: "Reframe Pilates",
-    desc: "Design System",
+    desc: "Design System / Website Redesign",
     ctaText: "website",
     src: "/reframe-pilates-showreel.mp4",
     timeLineImages: [
       {
         title: "Process",
         description:
-          "We started with goal alignment, set milestones via a Gantt chart, iterated design system components, refined to brand needs, and finalized a scalable UI system.",
+          "We started with goal alignment, set milestones via a Gantt chart, iterated design system components, refined them to the Pilates brand needs, and finalized a scalable UI system for this small business website redesign.",
       },
-      { image: ["/reframe-pilates-zoom-call.png"], text: "Initial Call" },
+      { image: ["/reframe-pilates-zoom-call.png"], text: "Initial Client Call" },
       {
         image: [
           "/reframe-pilates-thumbnail.png",
           "/reframe-pilates-subscription-module.png",
         ],
-        text: "First Design System Iteration Created",
+        text: "First Design System Iteration",
       },
       {
         image: ["/reframe-pilates-design-system-refinement.png"],
-        text: "Refined to clients needs",
+        text: "Refined Design for Brand Needs",
       },
       {
         image: ["/reframe-pilates-final-design-system.png"],
-        text: "Finalized New Design System",
+        text: "Finalized Pilates Brand Website System",
       },
     ],
     testimonialText:
-      "Kane [img0] is a warm and friendly [img2] person with [img1] clearly a passion and sincere desire.",
+      "Kane [img0] is a warm and friendly [img2] freelance designer with [img1] a clear passion for small business branding and website design.",
     testimonialImages: [
       "/reframe-pilates-testimonial-image-0.png",
       "/reframe-pilates-testimonial-image-1.png",
@@ -120,55 +302,48 @@ const websiteCaseStudyProps = [
     ],
     testimonialAuthor: "Natalie Gabellone",
   },
-    {
+  {
     video: true,
     page: "/work/komakase",
     color: "#CBB9D5",
-    projectLink:
-      "https://komakase.coffee/",
+    projectLink: "https://komakase.coffee/",
     companyLogo: "/komakase-logo.svg",
     projectDescription:
-      "I partnered with Komakase to build a high-converting Shopify website featuring subscriptions and custom functionality, while redesigning their typography and brand colors to create a modern site aligned with their brand identity—achieving nearly a 7% conversion rate on day one.",
+      "I partnered with Komakase Coffee to build a high-converting Shopify website featuring subscriptions and custom functionality, while redesigning typography and brand colors to create a modern site aligned with their identity. This project highlights small business ecommerce website design and branding in the Bay Area—achieving nearly a 7% conversion rate on day one.",
     companyName: "Komakase",
-    desc: "Design/Development",
+    desc: "Branding / Website Design / Development",
     ctaText: "website",
     src: "/komakase-showreel.mp4",
     timeLineImages: [
       {
         title: "Process",
         description:
-          "We began with a vision to build a seamless coffee subscription system while elevating the overall look and feel of their existing website.",
+          "We began with a vision to build a seamless coffee subscription system while elevating the overall brand look and feel. The project focused on Shopify ecommerce web design, branding, and optimization for a local coffee business.",
       },
-        {
+      {
         image: [
           "/komakase-competetor-reasearch-1.png",
           "/komakase-competetor-reasearch-2.png",
         ],
-        text: "Competitor Research",
+        text: "Competitor Research for Coffee Brands",
       },
-      { image: ["/shopify-themes.png"], text: "Shopify Theme Reasearch" },
+      { image: ["/shopify-themes.png"], text: "Shopify Theme Research" },
       {
-        image: [
-          "/komakase-imagry-1.png",
-          "/komakase-imagry-2.png",
-        ],
-        text: "Komakase Imagery Selection",
+        image: ["/komakase-imagry-1.png", "/komakase-imagry-2.png"],
+        text: "Brand Photography & Imagery",
       },
-      {
-        image: ["/shopify-liquid.png"],
-        text: "Shopify Theme Customization",
-      },
+      { image: ["/shopify-liquid.png"], text: "Custom Shopify Development" },
       {
         image: ["/komakse-final-webiste-comparison.png"],
-        text: "Finalized New Design System",
+        text: "Finalized Coffee Brand Website",
       },
       {
-        image: ["/komakase-a-1.png","/komakase-a-2.png"],
-        text: "Analytics",
+        image: ["/komakase-a-1.png", "/komakase-a-2.png"],
+        text: "Analytics & Performance Optimization",
       },
     ],
     testimonialText:
-      "Kane [img0] is professional and communicative [img2], with [img1] clear passion—a pleasure to work with; highly recommended.",
+      "Kane [img0] is professional, communicative [img2], and passionate [img1] about branding and website design for small businesses—our coffee brand saw results immediately.",
     testimonialImages: [
       "/komakase-testimonial-image-0.jpg",
       "/komakase-testimonial-image-1.jpg",
@@ -177,4 +352,5 @@ const websiteCaseStudyProps = [
     testimonialAuthor: "Josh D'esposito",
   },
 ];
+
 export default websiteCaseStudyProps;
