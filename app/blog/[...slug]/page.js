@@ -49,7 +49,7 @@ function buildSections(info) {
   const normalized = info.replace(/\r\n/g, "\n");
 
   // Case-insensitive, spacing-tolerant, supports your typo <SectionTItle/>
-  // Matches: <SectionTitle> Title Here <SectionTitle/>  (or ...<SectionTItle/>)
+  // Matches: <SectionTitle> Title Here <SectionTitle/> (or ...<SectionTItle/>)
   const TAG_RE = /<\s*SectionTitle\s*>\s*([^<]+?)\s*<\s*SectionT(?:itle|Itle)\s*\/\s*>/gi;
 
   const tagMatches = [];
@@ -58,20 +58,16 @@ function buildSections(info) {
     tagMatches.push({
       title: (m[1] || "").trim(),
       start: m.index,
-      after: TAG_RE.lastIndex, // position right after the closing tag
+      after: TAG_RE.lastIndex,
     });
   }
 
   if (tagMatches.length) {
     const sections = [];
 
-    // Anything before the first tag becomes an "Overview" preface
     const preface = normalized.slice(0, tagMatches[0].start).trim();
-    if (preface) {
-      sections.push({ id: "overview", title: "Overview", body: preface });
-    }
+    if (preface) sections.push({ id: "overview", title: "Overview", body: preface });
 
-    // Each tag defines a titled section; body is everything until the next tag
     for (let i = 0; i < tagMatches.length; i++) {
       const { title, after } = tagMatches[i];
       const nextStart = i < tagMatches.length - 1 ? tagMatches[i + 1].start : normalized.length;
@@ -131,7 +127,10 @@ function buildSections(info) {
 }
 
 function Paragraphs({ text }) {
-  const parts = useMemo(() => text.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean), [text]);
+  const parts = useMemo(
+    () => text.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean),
+    [text]
+  );
   return (
     <>
       {parts.map((p, i) => (
@@ -147,29 +146,36 @@ export default function BlogPage({ params }) {
   const rawSlug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug || "";
   const slug = String(rawSlug).toLowerCase();
 
+  // Non-hook logic is fine to gate
   const blogMatch = BlogProps.find((item) => lastSegment(item.page) === slug) || null;
+  const hasBlog = !!blogMatch;
 
-  if (!blogMatch) return <NoPageFound slug={slug} />;
+  // --- All hooks at top-level, never conditional ---
+  const sections = useMemo(() => {
+    if (!hasBlog) return [];
+    return buildSections(String(blogMatch.info || ""));
+  }, [hasBlog, blogMatch?.info]);
 
-  const sections = useMemo(() => buildSections(String(blogMatch.info || "")), [blogMatch.info]);
-  const related = useMemo(
-    () => BlogProps.filter((b) => lastSegment(b.page) !== slug).slice(0, 6),
-    [slug]
-  );
+  const related = useMemo(() => {
+    if (!hasBlog) return [];
+    return BlogProps.filter((b) => lastSegment(b.page) !== slug).slice(0, 6);
+  }, [hasBlog, slug]);
 
   const observerRef = useRef(null);
   const activeIdRef = useRef("");
 
-  function handleJump(e, id) {
+  const handleJump = (e, id) => {
     e.preventDefault();
     const el = document.getElementById(id);
     if (!el) return;
     const y = el.getBoundingClientRect().top + window.scrollY - 96; // adjust for navbar
     window.history.replaceState(null, "", `#${id}`);
     window.scrollTo({ top: y, behavior: "smooth" });
-  }
+  };
 
   useEffect(() => {
+    if (!hasBlog || sections.length === 0) return;
+
     const sectionEls = sections.map((s) => document.getElementById(s.id)).filter(Boolean);
     if (!sectionEls.length) return;
 
@@ -183,8 +189,12 @@ export default function BlogPage({ params }) {
         if (visible?.target?.id && visible.target.id !== activeIdRef.current) {
           activeIdRef.current = visible.target.id;
           window.history.replaceState(null, "", `#${visible.target.id}`);
-          document.querySelectorAll("[data-timeline-link]").forEach((n) => n.classList.remove("text-black"));
-          const activeLink = document.querySelector(`[data-timeline-link="${visible.target.id}"]`);
+          document
+            .querySelectorAll("[data-timeline-link]")
+            .forEach((n) => n.classList.remove("text-black"));
+          const activeLink = document.querySelector(
+            `[data-timeline-link="${visible.target.id}"]`
+          );
           activeLink?.classList.add("text-black");
         }
       },
@@ -193,16 +203,22 @@ export default function BlogPage({ params }) {
 
     sectionEls.forEach((el) => observerRef.current.observe(el));
     return () => observerRef.current?.disconnect();
-  }, [sections]);
+  }, [hasBlog, sections]);
 
   useEffect(() => {
+    if (!hasBlog) return;
     const hash = decodeURIComponent(window.location.hash.replace("#", ""));
     if (!hash) return;
     const el = document.getElementById(hash);
     if (!el) return;
     const y = el.getBoundingClientRect().top + window.scrollY - 96;
     window.scrollTo({ top: y });
-  }, []);
+  }, [hasBlog]);
+
+  // Render paths are conditional, but hooks above always ran
+  if (!hasBlog) {
+    return <NoPageFound slug={slug} />;
+  }
 
   return (
     <div className="bg-white text-black min-h-screen flex flex-col gap-9">
