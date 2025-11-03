@@ -317,7 +317,7 @@ const ProcessTimeline = memo(function ProcessTimeline({ slides = [] }) {
 });
 
 /* ================= Page ================= */
-export default function CaseStudy({ websiteMatch, match, alt }) {
+export default function CaseStudy({ websiteMatch, match, alt, }) {
   const reduce = useReducedMotion();
   const [bg, setBg] = useState("transparent");
 

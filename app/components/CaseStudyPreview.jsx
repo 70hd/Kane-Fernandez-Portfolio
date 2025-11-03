@@ -1,25 +1,21 @@
+// app/components/CaseStudyPreview.js
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-/* ---------- Lazy chunks (reduce JS on first paint) ---------- */
-const Navbar = dynamic(() => import("./navbar"), {
-  ssr: false,
-  loading: () => null,
-});
-const CaseCardLazy = dynamic(() => import("./CaseCard"), {
-  ssr: false,
-  loading: () => null,
-});
+/* ---------- Lazy imports ---------- */
+const Navbar = dynamic(() => import("./navbar"), { ssr: false, loading: () => null });
+const CaseCardLazy = dynamic(() => import("./CaseCard"), { ssr: false, loading: () => null });
 
 /* ---------- Tunables ---------- */
 const SPRING = { stiffness: 120, damping: 20, mass: 0.9 };
 const OVERLAY_MS = 200;
 
-/* ---------- Helpers ---------- */
+/* ---------- Hooks ---------- */
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
@@ -63,10 +59,21 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
   const [cursorVisible, setCursorVisible] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState(null);
 
+  const reduceMotion = usePrefersReducedMotion();
+  const overlayRef = useRef(null);
   const navigatedRef = useRef(false);
   const enteredRef = useRef(false);
-  const overlayRef = useRef(null);
-  const reduceMotion = usePrefersReducedMotion();
+
+  /* Normalize items: coerce video flag to boolean and ensure image fallback */
+  const normalizedItems = useMemo(() => {
+    return (items || []).map((it) => {
+      const videoBool =
+        it?.video === true ||
+        (typeof it?.video === "string" && it.video.toLowerCase() === "true");
+      const img = it?.image || (!videoBool ? it?.src : undefined);
+      return { ...it, video: videoBool, image: img };
+    });
+  }, [items]);
 
   /* Lock page scroll when overlay is open */
   useEffect(() => {
@@ -78,7 +85,7 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
     };
   }, [expandedIndex]);
 
-  /* Reset flags whenever a new item expands */
+  /* Reset navigation guards when a new item expands */
   useEffect(() => {
     navigatedRef.current = false;
     enteredRef.current = false;
@@ -87,9 +94,7 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
   /* Close overlay with Escape */
   useEffect(() => {
     if (expandedIndex === null) return;
-    const onKey = (e) => {
-      if (e.key === "Escape") setExpandedIndex(null);
-    };
+    const onKey = (e) => e.key === "Escape" && setExpandedIndex(null);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [expandedIndex]);
@@ -99,59 +104,44 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
     if (expandedIndex !== null) overlayRef.current?.focus();
   }, [expandedIndex]);
 
-  /* Idle prefetch destination pages (won’t rush critical path) */
+  /* Idle prefetch destination pages */
   useEffect(() => {
-    if (!items?.length) return;
-    const idle = window.requestIdleCallback?.bind(window) || ((cb) => setTimeout(cb, 1500));
-    const cancel = window.cancelIdleCallback?.bind(window) || clearTimeout;
-
+    if (!normalizedItems.length) return;
+    const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1500));
+    const cancel = window.cancelIdleCallback || clearTimeout;
     const id = idle(() => {
-      items.forEach((i) => {
-        if (i?.page) {
-          try {
-            router.prefetch?.(i.page);
-          } catch {}
-        }
-      });
+      normalizedItems.forEach((i) => i?.page && router.prefetch?.(i.page));
     });
-
     return () => cancel(id);
-  }, [items, router]);
+  }, [normalizedItems, router]);
 
-  /* Stable callbacks to reduce child re-renders */
+  /* Handlers */
   const handleExpand = useCallback((i) => {
     setCursorVisible(false);
     setExpandedIndex(i);
   }, []);
 
   const bgStyle = useMemo(
-    () => ({
-      backgroundColor: bg,
-      transition: "background-color 300ms ease",
-      cursor: "auto",
-    }),
+    () => ({ backgroundColor: bg, transition: "background-color 300ms ease", cursor: "auto" }),
     [bg]
   );
 
-  /* Only set video src when overlay is open (preload=none) */
-  const activeVideoSrc = expandedIndex !== null ? items[expandedIndex]?.src : undefined;
+  /* Active media (STRICT video check) */
+  const activeItem = expandedIndex !== null ? normalizedItems[expandedIndex] : null;
+  const isVideo = activeItem?.video === true;
+  const activeSrc = isVideo ? activeItem?.src : activeItem?.image || activeItem?.src;
 
   return (
-    <section
-      className="relative isolate z-[200] overflow-visible"
-      aria-labelledby="case-studies-title"
-      style={{ minHeight: "0px" }}
-    >
+    <section className="relative isolate z-[200] overflow-visible" style={{ minHeight: 0 }}>
       {/* Content layer */}
       <div className="relative -mt-[60vh]">
         <div className="w-full h-fit gap-9 pointer-events-auto" style={bgStyle}>
-          {/* Navbar lazily hydrated */}
           <Suspense fallback={null}>
             <Navbar />
           </Suspense>
 
-          {/* Cards: mount only when near viewport, and hydrate lazily */}
-          {items.map((info, idx) => (
+          {/* Cards: mount when near viewport */}
+          {normalizedItems.map((info, idx) => (
             <ViewMount key={idx} rootMargin="400px">
               <Suspense fallback={null}>
                 <CaseCardLazy
@@ -167,6 +157,9 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
                   setCursorPos={setCursorPos}
                   expandedIndex={expandedIndex}
                   onExpand={handleExpand}
+                  suspendMedia={false}
+                  /* If your CaseCard supports it, this hints to render image for non-video cards */
+                  preferImageWhenNotVideo
                 />
               </Suspense>
             </ViewMount>
@@ -174,7 +167,7 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
         </div>
       </div>
 
-      {/* Overlay preview */}
+      {/* Overlay preview (video OR image) */}
       <AnimatePresence>
         {expandedIndex !== null && (
           <motion.div
@@ -196,41 +189,59 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
             onAnimationComplete={() => {
               if (!enteredRef.current) {
                 enteredRef.current = true;
-                const link = items[expandedIndex]?.page;
+                const link = activeItem?.page;
                 if (!navigatedRef.current && link) {
                   navigatedRef.current = true;
-                  // navigation happens after fade-in completes (feels instant to user)
-                  // if you prefer to wait a tick, wrap in requestAnimationFrame
-                  // requestAnimationFrame(() => router.push(link));
                   router.push(link);
                 }
               }
             }}
           >
-            <motion.video
-              /* Delay network request until overlay opens */
-              src={activeVideoSrc}
-              preload="none"
-              autoPlay
-              muted
-              loop
-              playsInline
-              aria-label="Case study preview video"
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100vw",
-                height: "100vh",
-                objectFit: "cover",
-              }}
-              initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
-              transition={{ duration: reduceMotion ? 0 : OVERLAY_MS / 1000, ease: "easeOut" }}
-              /* keep CPU/GPU cooler on low-power devices */
-              disablePictureInPicture
-              controls={false}
-            />
+            {isVideo ? (
+              <motion.video
+                src={activeSrc}
+                preload="none"
+                autoPlay
+                muted
+                loop
+                playsInline
+                aria-label="Case study preview video"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100vw",
+                  height: "100vh",
+                  objectFit: "cover",
+                }}
+                initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
+                transition={{ duration: reduceMotion ? 0 : OVERLAY_MS / 1000, ease: "easeOut" }}
+                disablePictureInPicture
+                controls={false}
+              />
+            ) : (
+              <motion.div
+                aria-label="Case study preview image"
+                style={{ position: "absolute", inset: 0 }}
+                initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
+                transition={{ duration: reduceMotion ? 0 : OVERLAY_MS / 1000, ease: "easeOut" }}
+              >
+                {activeSrc ? (
+                  <Image
+                    src={activeSrc}
+                    alt={activeItem?.alt || activeItem?.companyName || "Case study preview"}
+                    fill
+                    sizes="100vw"
+                    style={{ objectFit: "cover" }}
+                    priority
+                  />
+                ) : null}
+              </motion.div>
+            )}
+
             <button
               type="button"
               onClick={() => setExpandedIndex(null)}
