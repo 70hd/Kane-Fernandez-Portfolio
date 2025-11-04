@@ -70,5 +70,126 @@ Good design blends beauty, clarity, and purpose. By keeping your layout simple, 
 `,
     alt: "",
   },
+    {
+    video: false,
+    page: "/blog/the-top-5-most-common-website-design-mistakes-and-how-to-avoid-them",
+    color: "#CBB9D5",
+    title: "The Top 5 Most Common Website Design Mistakes (and How to Avoid Them)",
+    desc: "Most websites fail not because they look bad—but because they confuse visitors. Here are the five biggest design mistakes that cost businesses trust, clicks, and sales—and how to fix them fast.",
+    src: "/everlane-website-component.png",
+    image: "/everlane-website-component.png",
+    author: "Kane Fernandez",
+    cursorText: "View Blog",
+    date: "Nov 3, 2025",
+    length: 10,
+    info: `<SectionTitle> 1. Lack of Clear Direction <SectionTitle/>
+
+Ask any founder or creative where their business is headed, and you’ll often hear a vague answer: “We just want to grow.” But growth without direction isn’t progress; it’s motion without meaning. A lack of clarity is one of the most common and harmful mistakes, especially for small businesses and freelancers.
+
+When you don’t define your goals, you end up saying “yes” to everything, every client, every opportunity, and every idea. Soon your work feels scattered, your messaging becomes confusing, and your energy spreads too thin to make a real impact.
+
+Clarity doesn’t mean you have everything figured out. It means having a destination, a North Star, that guides your decisions and keeps your efforts focused.
+
+Here’s how to fix it:
+- Define your purpose. Why does your brand exist beyond making money? What problem are you solving or value are you creating for people? Write it down. This becomes the emotional anchor behind every decision you make.
+
+- Set measurable goals. Instead of saying “I want more clients,” say “I want to sign 3 recurring clients by the end of Q1.” Numbers make direction tangible.
+
+- Review regularly. The most successful brands don’t just set goals; they revisit them monthly. Adjust when something isn’t working. Direction isn’t static; it evolves with your business.
+
+When you move with intention, everything else, from your marketing strategy to your website design, becomes sharper, more cohesive, and more meaningful.
+
+<SectionTitle>  2. Ignoring Brand Consistency <SectionTitle/>
+
+Your brand is your reputation in visual form. Every post, email, and page design tells people who you are before they even read a word. Yet one of the biggest mistakes businesses make is being inconsistent.
+
+Maybe your Instagram uses one color palette, your website another, and your email signatures are written in different tones. Or maybe your visuals look great, but your message keeps changing, sometimes playful, sometimes corporate, sometimes cryptic. The result? Confusion.
+
+And confusion is the enemy of conversion.
+
+Consistency builds trust. When your audience sees your brand showing up with the same tone, colors, and clarity across every platform, they start to feel familiarity. Familiarity builds recognition, and recognition builds loyalty.
+
+Here’s how to fix it:
+- Create a simple brand guide. You don’t need a 50-page PDF. Just a 2-3 page document outlining your color palette, typefaces, logo usage, tone of voice, and imagery style. This becomes your creative compass.
+
+- Use repetition strategically. Your brand elements should appear consistently everywhere, but with flexibility. For example, your core color palette stays the same, but your shade intensity might shift depending on context.
+
+- Audit your content. Every quarter, review all your public touchpoints: your website, social media, business cards, and newsletters. Are they telling the same story visually and verbally?
+
+When everything aligns, your brand feels stronger and more professional, no matter your size. Even small businesses can look premium simply through consistency.
+
+<SectionTitle> 3. Neglecting the User Experience <SectionTitle/>
+
+You can have the best product or service in the world, but if people can’t use it easily, they’ll move on. Neglecting user experience (UX) is one of the most silent yet costly mistakes businesses make.
+
+Think about your website. If it takes more than three seconds to load, half of your visitors will leave. If your navigation feels confusing, your bounce rate increases. If your contact form doesn’t work smoothly on mobile, potential clients may never reach you.
+
+UX isn’t just about usability; it’s about emotion. Every button, scroll, or animation should make people feel confident, comfortable, and curious enough to continue. A poor user experience creates friction; a great one removes it.
+
+Here’s how to fix it:
+- Design for simplicity. Clarity always wins over cleverness. Keep layouts clean, typography legible, and visual hierarchy intuitive. Every element should have a purpose.
+
+- Optimize for mobile. Over 60% of web traffic happens on mobile devices. Test your site regularly on multiple screen sizes. Buttons should be tappable, text should resize properly, and images shouldn’t break layouts.
+
+- Test with real users. Don’t assume your design works just because you built it. Ask a friend, client, or family member to navigate your site while you watch. Where do they hesitate? Where do they click instinctively? That feedback is invaluable.
+
+- Prioritize speed. Compress images, clean up scripts, and remove unnecessary plugins. A fast website doesn’t just improve UX; it boosts your SEO too.
+
+In 2025, UX is your silent salesman. A great user experience can double conversions without spending another dollar on marketing.
+
+<SectionTitle> 4. Underestimating Marketing <SectionTitle/>
+
+“Build it and they will come” might work in movies, but not in business. One of the most common mistakes entrepreneurs make is assuming that their product, service, or website will naturally attract customers because it’s good.
+
+It won’t.
+
+People don’t buy what they don’t know exists. Even the best ideas fail without visibility. Marketing isn’t just about selling; it’s about storytelling, awareness, and connection. It’s how you make people care about what you’ve built.
+
+Here’s how to fix it:
+
+- Start early. Don’t wait until after launch to think about marketing. Share your journey as you build, your ideas, challenges, and behind-the-scenes moments. This builds anticipation and authenticity.
+
+- Create value-first content. The best marketing doesn’t feel like marketing. Educate, inspire, or entertain your audience. Show them what they’ll gain, not just what you sell.
+
+- Leverage multiple channels. Relying on one platform, like Instagram, is risky. Diversify with email marketing, SEO, and partnerships. Each channel should feed into the others.
+
+- Track and adapt. Use analytics tools to see what actually works. Is your audience engaging more with tutorials or stories? Adjust your content accordingly.
+
+Think of marketing as planting seeds. Some sprout fast, while others take time. But if you stay consistent, you’ll build an ecosystem where leads, referrals, and loyal customers grow naturally.
+
+The businesses that succeed long-term rarely have the best product; they’re the ones that communicate it best.
+
+<SectionTitle> 5. Trying to Do Everything Alone <SectionTitle/>
+
+Entrepreneurs are builders by nature. We wear multiple hats, designer, marketer, accountant, copywriter, and salesperson. At first, it feels empowering. But over time, trying to do everything yourself becomes a bottleneck that drains creativity and energy.
+
+Doing it all isn’t a sign of strength; it’s a sign of fear, fear of delegating, fear of spending money, fear of losing control. The problem is that when you manage every detail, you slow your own progress.
+
+Here’s how to fix it:
+
+- Identify your zone of genius. Ask yourself: what’s the one thing I do better than anyone else? Focus your time there. Everything outside that zone should eventually be delegated, automated, or outsourced.
+
+- Build systems early. Use tools like Notion, Asana, or ClickUp to document your processes. That way, when you hire help, even part-time, onboarding becomes easy.
+
+- Start small. You don’t need a full team overnight. Hire a freelancer for design, a virtual assistant for scheduling, or an accountant for taxes. The return on reclaiming your focus is significant.
+
+- Collaborate intentionally. Surround yourself with people who challenge you creatively. Shared knowledge expands your skillset faster than any online course.
+
+Scaling doesn’t mean losing control; it means creating more time for high-impact work. The best leaders don’t do everything; they build networks of people who do it better.
+
+<SectionTitle> Final Thoughts <SectionTitle/>
+
+Mistakes are inevitable, but patterns are preventable. The five mistakes above, lack of direction, brand inconsistency, neglecting UX, poor marketing, and doing everything solo, are silent killers of momentum.
+
+The real secret to long-term growth isn’t perfection. It’s awareness. When you start recognizing these mistakes as signals rather than failures, you turn frustration into feedback.
+
+If you’re a designer, entrepreneur, or small business owner reading this, take this as a checkpoint. Revisit your goals, simplify your brand, audit your user experience, build your audience, and most importantly, build a team, even a small one — that supports your vision.
+
+Progress doesn’t come from avoiding mistakes. It comes from learning faster than you fail.
+
+Keep iterating. Keep improving. And remember: every great brand started with a few wrong turns; they just didn’t stop driving.
+`,
+    alt: "",
+  },
 ];
 export default websiteCaseStudyProps;

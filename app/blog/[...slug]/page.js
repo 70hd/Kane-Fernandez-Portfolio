@@ -249,10 +249,10 @@ export default function BlogPage({ params }) {
         />
       )}
 
-      <div className="dynamic-padding relative w-full h-fit grid grid-cols-12 gap-8">
-        {/* Timeline */}
-        <aside className="col-span-3 xl:col-span-2">
-          <div className="sticky top-32 flex flex-col gap-4">
+   {/* Main content wrapper: small = column, md+ = row */}
+<div className="dynamic-padding relative w-full h-fit flex flex-col md:flex-row gap-9  ">
+  <aside className="col-span-3 hidden md:block xl:col-span-2  max-w-[192px] w-full">
+          <div className="sticky top-32 flex flex-col gap-4  w-full">
             <h3 className="uppercase tracking-wide">Timeline</h3>
             <nav className="flex flex-col gap-2">
               {(sections.length ? sections : [{ id: "top", title: "Overview" }]).map((s) => (
@@ -261,7 +261,7 @@ export default function BlogPage({ params }) {
                   href={`#${s.id}`}
                   onClick={(e) => handleJump(e, s.id)}
                   data-timeline-link={s.id}
-                  className="text-black/85 hover:text-black transition-colors line-clamp-1"
+                  className="text-black/85 w-full hover:text-black transition-colors line-clamp-1"
                 >
                   {s.title}
                 </a>
@@ -269,8 +269,6 @@ export default function BlogPage({ params }) {
             </nav>
           </div>
         </aside>
-
-        {/* Article */}
         <article className="col-span-6 xl:col-span-7 flex flex-col gap-10">
           {(sections.length ? sections : [{ id: "top", title: "", body: String(blogMatch.info || "") }]).map(
             (section) => (
@@ -282,28 +280,44 @@ export default function BlogPage({ params }) {
           )}
         </article>
 
-        {/* Related */}
-        <aside className="col-span-3 xl:col-span-3">
-          <div className="sticky top-32 flex flex-col gap-6">
-            <h3 className="uppercase tracking-wide">More from the blog</h3>
-            <div className="flex flex-col gap-6 max-h-[70vh] overflow-auto pr-1">
-              {related.map((prev, index) => (
-                <Link key={index} href={prev.page} className="flex flex-col gap-3 group">
-                  {prev.image && (
-                    <Image src={prev.image} width={392} height={285} alt={prev.alt || ""} className="w-full" />
-                  )}
-                  <div className="flex flex-col gap-1">
-                    <h4 className="group-hover:underline">{prev.title}</h4>
-                    <p className="text-black/85 ">
-                      {prev.date} • {prev.length} min&nbsp;read
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </aside>
+
+
+  {/* Related */}
+  <aside className="col-span-3 xl:col-span-3 md:w-[285px] max-w-[285px] w-full">
+    <div className="sticky top-32 mt-9 flex flex-col gap-6">
+      <h3 className="uppercase tracking-wide">More from the blog</h3>
+
+      {/* List: small = column, md+ = row */}
+      <div className="flex flex-col gap-6 max-h-[70vh] overflow-auto pr-1">
+        {related
+          .filter((_, index) => index <= 2)
+          .map((prev, index) => (
+            <Link
+              key={index}
+              href={prev.page}
+              className="flex flex-col gap-3 group w-full md:w-[285px]"
+            >
+              {prev.image && (
+                <Image
+                  src={prev.image}
+                  width={392}
+                  height={285}
+                  alt={prev.alt || ""}
+                  className="w-full h-auto max-w-[392px] max-h-[285px]"
+                />
+              )}
+              <div className="flex flex-col gap-1 w-full">
+                <h4 className="group-hover:underline w-full">{prev.title}</h4>
+                <p className="text-black/85 w-full">
+                  {prev.date} • {prev.length} min&nbsp;read
+                </p>
+              </div>
+            </Link>
+          ))}
       </div>
+    </div>
+  </aside>
+</div>
     </div>
   );
 }
