@@ -353,9 +353,36 @@ export default function Page() {
       return () => clearTimeout(t);
     }
   }, [hover]);
+function scrollToWork() {
+  if (typeof window === "undefined") return;
 
+  const prefersReduced =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (prefersReduced) {
+    // No fancy smooth scroll for reduced-motion users
+    window.scrollBy({ top: 3500, left: 0, behavior: "auto" });
+  } else {
+    const step = () =>
+      window.scrollBy({ top: 1500, left: 0, behavior: "smooth" });
+
+    step();
+    setTimeout(step, 400);
+    setTimeout(step, 800);
+  }
+}
   return (
     <MotionConfig reducedMotion="user" transition={SPRING}>
+    <div className="sticky top-0 z-50 border-[#121212]/25 border-b-[.5px] w-full justify-end h-fit flex x-dynamic-padding py-6 items-center">
+  <button
+    type="button"
+    onClick={scrollToWork}
+    className="cursor-pointer text-sm sm:text-base underline-offset-4 hover:underline"
+  >
+   <h3>View Work</h3> 
+  </button>
+</div>
       {/* JSON-LD: LocalBusiness */}
       <Script
         id="ld-local-business"
