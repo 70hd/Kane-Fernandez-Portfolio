@@ -25,7 +25,7 @@ function BackgroundGraphic() {
       alt=""
       priority
       sizes="100vw"
-      className="absolute z-0 top-[36px] left-1/2 -translate-x-1/2 w-screen max-w-none h-full md:h-auto"
+      className="absolute z-0 sm:top-[32px] top-[96px] left-1/2 -translate-x-1/2 w-screen min-w-[1248px] max-w-none h-full md:h-auto"
     />
   );
 }
@@ -55,14 +55,14 @@ export default function HeroSection({ metricsTop, metricsBottom }) {
   };
 
   return (
-    <section className="relative h-[492px] md:h-[680px] overflow-hidden bg-white text-[#151515] border-b border-[#151515]/10">
+    <section className="relative h-[550px] md:h-[680px] overflow-hidden bg-white text-[#151515] border-b border-[#151515]/10">
       <BackgroundGraphic />
 
       <motion.div
         variants={group}
         initial="hidden"
         animate="show"
-        className="relative z-10 flex h-full flex-col items-center justify-between md:pt-[52px] pt-[0px]"
+        className="relative z-10 flex h-full flex-col items-center sm:justify-between gap-9 md:pt-[52px] pt-[0px]"
       >
         <Container className="py-6 text-center flex flex-col">
           <motion.h1 variants={item} className="h1">
