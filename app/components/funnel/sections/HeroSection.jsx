@@ -25,7 +25,7 @@ function BackgroundGraphic() {
       alt=""
       priority
       sizes="100vw"
-      className="absolute z-0 sm:top-[32px] top-[96px] left-1/2 -translate-x-1/2 w-screen min-w-[1048px] max-w-none h-full md:h-auto"
+      className="absolute z-0 sm:top-[32px] top-[96px] left-1/2 -translate-x-1/2 w-screen min-w-[1248px] max-w-none h-full md:h-auto"
     />
   );
 }
