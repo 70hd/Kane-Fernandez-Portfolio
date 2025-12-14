@@ -1,22 +1,15 @@
-// components/funnel/ui/FeatureRow.jsx
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import dynamic from "next/dynamic";
+import Lottie from "lottie-react";
 import { cn } from "./cn";
 import Button from "./Button";
 
-// Load lottie-react only when this component needs it (separate chunk)
-const Lottie = dynamic(() => import("lottie-react"), {
-  ssr: false,
-  loading: () => <div className="w-full aspect-[606/341]" />,
-});
-
 /**
- * Performance behavior:
- * - No lottie JS in the main bundle (code-split)
- * - Only fetch animation JSON when in view
- * - Plays once, then freezes on last frame
+ * Behavior:
+ * - Plays ONLY while in view (pauses out of view)
+ * - Still completes ONLY once total
+ * - Freezes on the last frame after completion
  */
 export default function FeatureRow({
   reverse,
@@ -25,15 +18,15 @@ export default function FeatureRow({
   title,
   body,
   cta,
-  lottieData, // optional: pass imported JSON object instead of imageSrc
+  lottieData, // optional
 }) {
   const containerRef = useRef(null);
   const lottieRef = useRef(null);
 
-  const [inView, setInView] = useState(false);
   const [animData, setAnimData] = useState(lottieData || null);
-  const [hasPlayed, setHasPlayed] = useState(false);
+  const [inView, setInView] = useState(false);
   const [started, setStarted] = useState(false);
+  const [hasPlayed, setHasPlayed] = useState(false);
 
   const shouldLoadFromPath = useMemo(() => {
     if (lottieData) return false;
@@ -41,7 +34,26 @@ export default function FeatureRow({
     return /\.json(\?.*)?$/i.test(imageSrc);
   }, [imageSrc, lottieData]);
 
-  // Observe visibility
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      if (!shouldLoadFromPath) return;
+      try {
+        const res = await fetch(imageSrc);
+        const json = await res.json();
+        if (!cancelled) setAnimData(json);
+      } catch {
+        // silent
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [imageSrc, shouldLoadFromPath]);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -55,34 +67,9 @@ export default function FeatureRow({
     return () => obs.disconnect();
   }, []);
 
-  // Fetch ONLY when in view (and only once)
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      if (!inView) return;
-      if (!shouldLoadFromPath) return;
-      if (animData) return;
-
-      try {
-        const res = await fetch(imageSrc, { cache: "force-cache" });
-        const json = await res.json();
-        if (!cancelled) setAnimData(json);
-      } catch {
-        // silent fail
-      }
-    }
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [inView, shouldLoadFromPath, animData, imageSrc]);
-
-  // Play/pause behavior
   useEffect(() => {
     const inst = lottieRef.current;
-    if (!inst || hasPlayed || !animData) return;
+    if (!inst || hasPlayed) return;
 
     if (inView) {
       if (!started) {
@@ -94,15 +81,15 @@ export default function FeatureRow({
     } else {
       if (started) inst.pause?.();
     }
-  }, [inView, started, hasPlayed, animData]);
+  }, [inView, started, hasPlayed]);
 
-  // Freeze on last frame after completion
   useEffect(() => {
     const inst = lottieRef.current;
-    if (!inst || hasPlayed || !animData) return;
+    if (!inst || hasPlayed) return;
 
     const onComplete = () => {
       setHasPlayed(true);
+
       const totalFrames = inst.getDuration?.(true);
       const last = Math.max(0, Math.floor((totalFrames ?? 1) - 1));
       inst.goToAndStop?.(last, true);
@@ -110,7 +97,7 @@ export default function FeatureRow({
 
     inst.addEventListener?.("complete", onComplete);
     return () => inst.removeEventListener?.("complete", onComplete);
-  }, [hasPlayed, animData]);
+  }, [hasPlayed]);
 
   return (
     <div
@@ -138,9 +125,11 @@ export default function FeatureRow({
               animationData={animData}
               autoplay={false}
               loop={false}
+              // scales to container on all screens
               style={{ width: "100%", height: "auto", display: "block" }}
             />
           ) : (
+            // responsive placeholder with the same aspect ratio as 606x341
             <div className="w-full aspect-[606/341]" />
           )}
         </div>
@@ -153,11 +142,7 @@ export default function FeatureRow({
           <p>{body}</p>
 
           {cta ? (
-            <Button
-              variant="link"
-              href={cta.href}
-              className="inline-block py-3 px-0"
-            >
+            <Button variant="link" href={cta.href} className="inline-block py-3 px-0">
               {cta.label}
             </Button>
           ) : null}
