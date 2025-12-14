@@ -7,7 +7,7 @@ import { features, metricsBottom, metricsTop } from "../data";
 
 export default function FunnelPage() {
   return (
-    <div className="flex flex-col gap-9 bg-white">
+    <div className="flex flex-col gap-9 bg-white overflow-hidden">
       <HeroSection metricsTop={metricsTop} metricsBottom={metricsBottom} />
       <WhyHireMeSection features={features} />
       <PricingSection />

@@ -7,6 +7,7 @@ const plans = [
   {
     name: "Basic",
     price: "$750",
+    primary: true,
     subtitle: "For businesses that need a clean, professional site that actually converts",
     bullets: [
       "Conversion-focused website (up to 5 pages)",
@@ -47,7 +48,7 @@ const plans = [
 
 function PlanCard({ plan }) {
   return (
-    <div className="p-6 flex flex-col items-center justify-between min-w-[192px] w-full border border-[#319BF3]">
+    <div className={`p-6 flex flex-col items-center justify-between min-w-[192px] w-full border ${plan.primary? "border-[#319BF3]" : "border-[#151515]/10"}`}>
       <div className="flex flex-col gap-6 text-center text-[#151515]">
         <div className="flex flex-col gap-2">
           <h3>{plan.name}</h3>
