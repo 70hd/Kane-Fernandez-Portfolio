@@ -25,6 +25,14 @@
   font-style: italic;
   font-display: swap;
 }
+
+/* Use the italic face for headings (your Hero uses .h1 etc) */
+h1, h2, h3,
+.h1, .h2, .h3 {
+  font-family: "Trivia Serif", var(--font-geist-sans), system-ui, -apple-system, Arial, sans-serif;
+  font-style: italic; /* IMPORTANT: matches your only available face */
+  font-weight: 400;
+}
 html.funnel-page {
   --background: #ffffff;
   --foreground: #121212;
