@@ -13,6 +13,7 @@
     "@studio-freight/lenis": "^1.0.42",
     "@vercel/analytics": "^1.5.0",
     "framer-motion": "^12.23.12",
+    "lottie-react": "^2.4.1",
     "next": "15.4.8",
     "react": "19.1.0",
     "react-dom": "19.1.0"
