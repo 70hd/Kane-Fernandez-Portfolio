@@ -20,7 +20,7 @@
 }
 @font-face {
   font-family: "Trivia Serif";
-  src: url("/fonts/Trivia-Serif-Book-Italic.woff2") format("opentype");
+  src: url("/fonts/Trivia-Serif-Book-Italic.woff2") format("woff2");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
