@@ -36,7 +36,7 @@ function BackgroundGraphic() {
 
 export default function HeroSection({ metricsTop, metricsBottom }) {
   return (
-    <section className="relative h-[550px] md:h-[680px] overflow-hidden bg-white text-[#151515] border-b border-[#151515]/10">
+    <section className="relative h-[550px] md:h-[720px] overflow-hidden bg-white text-[#151515] border-b border-[#151515]/10">
       <BackgroundGraphic />
 
       <div className="relative z-10 flex h-full flex-col items-center sm:justify-between gap-9 md:pt-[52px] pt-0">
@@ -62,7 +62,7 @@ export default function HeroSection({ metricsTop, metricsBottom }) {
           </div>
         </Container>
 
-        <Container className="pb-9">
+        <Container className="pb-9 relative">
           <div className="motion-safe:animate-[fadeUp_.26s_ease-out_both] motion-safe:[animation-delay:140ms]">
             <MetricRow>
               {metricsTop.map((m) => (
@@ -74,7 +74,7 @@ export default function HeroSection({ metricsTop, metricsBottom }) {
               ))}
             </MetricRow>
 
-            <MetricRow className="mt-12 md:visible hidden">
+            <MetricRow className="mt-12 sm:flex hidden">
               {metricsBottom.map((m) => (
                 <MetricCard
                   key={`${m.title}-${m.text}`}
