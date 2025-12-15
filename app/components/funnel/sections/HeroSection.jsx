@@ -19,7 +19,7 @@ function MetricRow({ className = "", children }) {
 function BackgroundGraphic() {
   return (
     <Image
-      src="/webite-funnel-background.svg"
+      src="/website-funnel-background.svg"
       width={1644}
       height={391}
       alt=""
@@ -29,7 +29,7 @@ function BackgroundGraphic() {
       priority={false}
       loading="lazy"
       sizes="100vw"
-      className="pointer-events-none absolute z-0 sm:top-[32px] top-[96px] left-1/2 -translate-x-1/2 w-screen min-w-[1248px] max-w-none h-full md:h-auto"
+      className="pointer-events-none absolute z-0 sm:top-[32px] top-[64px] left-1/2 -translate-x-1/2 w-screen min-w-[1248px] max-w-none h-full md:h-auto"
     />
   );
 }
