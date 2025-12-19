@@ -15,7 +15,7 @@ const plans = [
       "- Built on Shopify / Squarespace / Webflow",
       "- Simple e-commerce or lead capture setup",
       "- Clear messaging + calls to action",
-      "- Fast turnaround (2–3 weeks)",
+      "- Fast turnaround (3-7 days)",
     ],
     cta: {
       label: "Start Basic",
