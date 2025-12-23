@@ -5,8 +5,8 @@ import Button from "../ui/Button";
 
 const plans = [
   {
-    name: "Basic",
-    price: "$750",
+    name: "Essential",
+    price: "$749",
     primary: true,
     subtitle:
       "For businesses that need a clean, professional site that actually converts",
@@ -18,14 +18,14 @@ const plans = [
       "- Fast turnaround (3-7 days)",
     ],
     cta: {
-      label: "Start Basic",
+      label: "Start Essential",
       variant: "primary",
       link: "https://calendar.app.google/LkkKqyNdjLWFhPmHA",
     },
   },
   {
-    name: "Standard",
-    price: "$1–3k",
+    name: "Customized",
+    price: "$999–2999",
     subtitle: "For businesses that want more leads and booked calls",
     bullets: [
      "- Custom-designed website (5–10 pages)",
@@ -33,10 +33,10 @@ const plans = [
      "- Light custom code where it actually matters",
      "- Lead capture optimized for your offer",
      "- 2 rounds of revisions",
-     "- Basic site support included (first month)",
+     "- Essential site support included (first month)",
     ],
     cta: {
-      label: "Start Standard",
+      label: "Start Customized",
       variant: "secondary",
       link: "https://calendar.app.google/LkkKqyNdjLWFhPmHA",
     },
