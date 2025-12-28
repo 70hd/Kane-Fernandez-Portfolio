@@ -41,22 +41,22 @@ const plans = [
       link: "https://calendar.app.google/LkkKqyNdjLWFhPmHA",
     },
   },
-  {
-    name: "Growth",
-    price: "Custom Pricing",
-    subtitle: "Custom projects typically start at $3,000",
-    bullets: [
-     "- Conversion strategy baked into every page",
-     "- Advanced features & integrations",
-     "- Priority communication & support",
-     "- Free premium monthly support (first month)",
-    ],
-    cta: {
-      label: "Apply for a project",
-      variant: "secondary",
-      link: "https://form.typeform.com/to/GU0zn5RM",
-    },
+{
+  name: "Brand Growth",
+  price: "Custom Pricing",
+  subtitle: "Strategic branding projects typically start at $3,000",
+  bullets: [
+    "- Brand strategy built to scale with your business",
+    "- Visual identity design (logos, style guides, brand assets)",
+    "- Messaging & voice development",
+    "- Priority communication & creative direction",
+  ],
+  cta: {
+    label: "Redefine Your Brand",
+    variant: "secondary",
+    link: "mailto:kanehfernandez@gmail.com",
   },
+}
 ];
 
 function PlanCard({ plan }) {
