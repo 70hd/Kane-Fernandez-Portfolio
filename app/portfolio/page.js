@@ -181,7 +181,7 @@ function PinnedIntro({ hover, setHover }) {
         >
           <article className="max-w-[630px] px-3 text-center w-full flex flex-col dynamic-gap-3">
             <p>
-              Kane Fernandez is a 15-year-old web designer and developer who
+              Kane Fernandez is a 16-year-old web designer and developer who
               creates high-end sites for small businesses. He’s been mentored by{" "}
               <a
                 href="https://www.linkedin.com/in/ryandavidholmes"
