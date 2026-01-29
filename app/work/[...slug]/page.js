@@ -40,6 +40,7 @@ export default function WorkPage({ params }) {
 
   const slug = String(rawSlug).toLowerCase();
 
+  // ✅ Hook 1: find match (always runs)
   const match = useMemo(() => {
     const w =
       websiteCaseStudyProps.find((item) => lastSegment(item.page) === slug) || null;
@@ -50,11 +51,13 @@ export default function WorkPage({ params }) {
     return w || b;
   }, [slug]);
 
-  if (!match) return <NoPageFound slug={slug} />;
+  // ✅ Hook 2: memoize timeline so it doesn't become a new array every render
+  const timeline = useMemo(() => {
+    const t = match?.timeLineImages;
+    return Array.isArray(t) ? t : [];
+  }, [match]);
 
-  const timeline = Array.isArray(match.timeLineImages) ? match.timeLineImages : [];
-
-  // ✅ Normalize timeline images into [{ src, alt }]
+  // ✅ Hook 3: derive timelineImages safely even when match is null
   const timelineImages = useMemo(() => {
     return timeline.flatMap((block) => {
       const images = block?.image;
@@ -66,6 +69,9 @@ export default function WorkPage({ params }) {
       return srcs.map((src) => ({ src, alt }));
     });
   }, [timeline]);
+
+  // ✅ after hooks: safe early return
+  if (!match) return <NoPageFound slug={slug} />;
 
   const videoSrc = safeVideoSrc(match);
 
@@ -147,7 +153,6 @@ export default function WorkPage({ params }) {
                     makeFullWidth ? "sm:col-span-2 lg:col-span-2" : ""
                   }`}
                 >
-                  {/* Consistent card shape, but never crop the image */}
                   <div className="relative w-full aspect-[16/10] bg-white">
                     <Image
                       src={img.src}
