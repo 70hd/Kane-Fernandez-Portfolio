@@ -26,19 +26,19 @@ export default function Page() {
       const [websiteMod, brandingMod, blogMod] = await Promise.all([
         import("../props/website-case-study-props"),
         import("../props/branding-case-study-props"),
-        import("../props/blog-props"),
+        // import("../props/blog-props"),
       ]);
 
       if (cancelled) return;
 
       const website = websiteMod.default || websiteMod;
       const branding = brandingMod.default || brandingMod;
-      const blog = blogMod.default || blogMod;
+      // const blog = blogMod.default || blogMod;
 
       const merged = [
                 ...(Array.isArray(branding) ? branding : []),
         ...(Array.isArray(website) ? website : []),
-        ...(Array.isArray(blog) ? blog : []),
+        // ...(Array.isArray(blog) ? blog : []),
       ];
 
       setItems(merged);
