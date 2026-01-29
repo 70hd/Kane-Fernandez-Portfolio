@@ -134,15 +134,26 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
   return (
     <section className="relative isolate z-[200] overflow-visible" style={{ minHeight: 0 }}>
       {/* Content layer */}
+      
       <div className="relative -mt-[60vh]">
+        
         <div className="w-full h-fit gap-9 pointer-events-auto" style={bgStyle}>
           <Suspense fallback={null}>
             <Navbar />
           </Suspense>
+         
 
           {/* Cards: mount when near viewport */}
           {normalizedItems.map((info, idx) => (
             <ViewMount key={idx} rootMargin="400px">
+              {idx === 0 && <div className="w-full max-w-[820px] flex flex-col gap-6 dynamic-padding mt-52">
+        <h1>Who I Am</h1>
+        <p className="w-full">
+         I am a 16-year-old web designer and developer who creates high-end sites for small businesses. Ive been mentored by Ryan Holmes (Postscript),
+Andy Johnson (Uniteddsn), and Dan Wittmer (YouTube) for the last 3 years.
+Have an idea? Get in touch
+        </p>
+       </div>}
               <Suspense fallback={null}>
                 <CaseCardLazy
                   noBlank={noBlank}
@@ -162,11 +173,13 @@ export default function CaseStudyPreview({ items = [], noBlank = false }) {
                   preferImageWhenNotVideo
                 />
               </Suspense>
+                
             </ViewMount>
           ))}
         </div>
+        
       </div>
-
+      
       {/* Overlay preview (video OR image) */}
       <AnimatePresence>
         {expandedIndex !== null && (

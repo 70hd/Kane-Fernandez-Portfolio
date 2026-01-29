@@ -29,7 +29,7 @@ export default function TextCursor({ text, pos, visible }) {
         fontFamily: "Trivia Serif",
         fontWeight: 400,
         fontSize: 24,
-        color: "var(--foreground)",
+        color: "var(--background)",
         userSelect: "none",
         willChange: "transform",
       }}

@@ -4,147 +4,89 @@ const websiteCaseStudyProps = [
     page: "/work/k2",
     color: "#CBB9D5",
     companyName: "K2",
+    projectDescription: "Built a complete brand system for K2, a clean energy drink concept for modern high performers. The project defined the brand’s core strategy, then translated it into a bold identity logotype rules, color palette, typography, and real world applications—so K2 can scale across packaging, social, and campaigns with a consistent, performance driven feel.",
     projectLink: "/k2-brand-guidelines.pdf",
     desc: "Brand Guidelines",
     src: "/k2-showreel.mp4",
-    slogan: "Clean energy for high performers",
-    animationImages: [
-      "/k2-logo-white.svg",
-      "/k2-logo-blue.svg",
-      "/k2-logo-green.svg",
-    ],
-    presentation: [
+    timeLineImages: [
       {
-        image: "/k2-presentation-1.png",
-        link: "/k2-brand-guidelines.pdf",
-        cursorText: "View Brand Guidelines",
-          firstIndex: true
+        image: ["/k2-1.png"],
+        alt: "Image of the K2 brand guidelines cover with bold futuristic typography on a black background, showing the title ‘K2 Brand Guidelines.’",
       },
       {
-        image: "/k2-presentation-2.png",
-        cursorText: "View Brand Guidelines",
+        image: ["/k2-2.png"],
+        alt: "Image of K2 logo breakdown showing custom italic typography, terminal slash detail, and logo construction rules.",
       },
       {
-        image: "/k2-presentation-3.png",
-        cursorText: "View Brand Guidelines",
+        image: ["/k2-3.png"],
+        alt: "Image of the K2 brand color palette featuring neon green, cyan blue, deep black, white, and purple color swatches with hex codes.",
       },
       {
-        image: "/k2-presentation-4.png",
-        cursorText: "View Brand Guidelines",
+        image: ["/k2-4.png"],
+        alt: "Image of K2 energy drink advertising concepts featuring product cans, winged visual metaphors, and clean performance-focused branding.",
       },
       {
-        image: "/k2-presentation-5.png",
-        cursorText: "View Brand Guidelines",
+        image: ["/k2-5.png"],
+        alt: "Image of K2 typography guidelines displaying headline fonts, character sets, and font weight hierarchy for brand usage.",
       },
       {
-        image: "/k2-presentation-6.png",
-        cursorText: "View Brand Guidelines",
+        image: ["/k2-6.png"],
+        alt: "Image of K2 brand pillars outlining clean ingredients, accessibility, performance optimization, transparency, and sustainability.",
       },
       {
-        image: "/k2-presentation-7.png",
-        link: "/k2-brand-guidelines.pdf",
-        cursorText: "View Brand Guidelines",
-        lastIndex: true
+        image: ["/k2-7.png"],
+        alt: "Image of the K2 brand guidelines closing slide with bold ‘Thank You’ typography on a black background.",
       },
-
-      ,
     ],
   },
-    {
+  {
     video: true,
     page: "/work/viderna",
     color: "#C1D5B9",
     companyName: "Viderna",
     projectLink: "/viderna-brand-positioning.pdf",
     desc: "Brand Positioning",
+    projectDescription: "Built a complete brand system and positioning foundation for Viderna, an AI-powered nutrition + fitness app designed to help busy people eat better, move more, and feel energized without complicated routines. The project defined the core strategy (purpose, mission, promise, pillars), then translated it into a cohesive identity—tagline “Fuel • Move • Thrive,” logo variants, color/typography, voice guidelines, and personas—so the brand can scale across app, web, and marketing.",
     src: "/viderna-showreel.mp4",
-    slogan: "Fuel Move Thrive",
-    animationImages: [
-      "/viderna-logo-1.svg",
-      "/viderna-logo-2.svg",
-    "/viderna-logo-3.svg",
-    "/viderna-logo-4.svg",
-    "/viderna-logo-5.svg",
-    "/viderna-logo-6.svg",
-    ],
-    presentation: [
+    timeLineImages: [
       {
-        image: "/viderna-presentation-1.png",
-        link: "/viderna-brand-positioning.pdf",
-        cursorText: "View Brand Positioning",
-          firstIndex: true
-      }
-      ,
-        {
-        image: "/viderna-presentation-15.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-16.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-17.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-18.png",
-        cursorText: "View Brand Positioning",
+        image: ["/viderna-1.png"],
+        alt: "Image of the Viderna brand positioning cover slide with a clean, modern layout introducing the brand strategy document.",
       },
       {
-        image: "/viderna-presentation-2.png",
-        cursorText: "View Brand Positioning",
+        image: ["/viderna-2.png"],
+        alt: "Image of Viderna brand positioning overview outlining core audience, market context, and the brand’s strategic direction.",
       },
       {
-        image: "/viderna-presentation-3.png",
-        cursorText: "View Brand Positioning",
+        image: ["/viderna-3.png"],
+        alt: "Image of Viderna positioning statement framework showing target customer, key benefit, and differentiators in a structured layout.",
       },
       {
-        image: "/viderna-presentation-4.png",
-        cursorText: "View Brand Positioning",
+        image: ["/viderna-4.png"],
+        alt: "Image of Viderna brand values and personality traits presented in a grid with concise descriptors and brand voice cues.",
       },
       {
-        image: "/viderna-presentation-6.png",
-        cursorText: "View Brand Positioning",
+        image: ["/viderna-5.png"],
+        alt: "Image of Viderna customer journey or messaging pillars showing how the brand communicates across key touchpoints.",
       },
-        {
-        image: "/viderna-presentation-8.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-9.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-10.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-11.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-12.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-13.png",
-        cursorText: "View Brand Positioning",
-      },
-        {
-        image: "/viderna-presentation-14.png",
-        cursorText: "View Brand Positioning",
-      },
-
       {
-        image: "/viderna-presentation-19.png",
-        link: "/viderna-brand-positioning.pdf",
-        cursorText: "View Brand Positioning",
-        lastIndex: true
+        image: ["/viderna-6.png"],
+        alt: "Image of Viderna competitive landscape or competitor comparison chart highlighting differentiation and positioning whitespace.",
       },
-
-      ,
+      {
+        image: ["/viderna-7.png"],
+        alt: "Image of Viderna tone of voice guidelines with example messaging and do/don’t rules for consistent communication.",
+      },
+      {
+        image: ["/viderna-8.png"],
+        alt: "Image of Viderna visual direction or moodboard showing color, typography, and imagery references for brand alignment.",
+      },
+      {
+        image: ["/viderna-9.png"],
+        alt: "Image of the Viderna brand positioning closing slide summarizing next steps for launch and implementation.",
+      },
     ],
   },
 ];
+
 export default websiteCaseStudyProps;

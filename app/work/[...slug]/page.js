@@ -1,13 +1,11 @@
-// app/work/[...slug]/page.js
 "use client";
 
-import { useRef, useState, useEffect, useLayoutEffect } from "react";
-import NoPageFound from "../../not-found"
+import { useMemo, use as usePromise } from "react";
+import Image from "next/image";
+import Navbar from "../../components/navbar";
+import NoPageFound from "../../not-found";
 import websiteCaseStudyProps from "../../props/website-case-study-props";
 import brandingCaseStudyProps from "../../props/branding-case-study-props";
-import CaseStudy from "../../components/CaseStudy";
-import { motion, useSpring, useReducedMotion } from "framer-motion";
-import { usePathname } from "next/navigation";
 
 /* ---------------- Utils ---------------- */
 function lastSegment(path = "") {
@@ -18,149 +16,158 @@ function lastSegment(path = "") {
   }
 }
 
+function hexToRgba(hex, alpha = 0.5) {
+  const h = String(hex || "").replace("#", "").trim();
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  if (full.length !== 6) return `rgba(255,255,255,${alpha})`;
+
+  const r = parseInt(full.slice(0, 2), 16);
+  const g = parseInt(full.slice(2, 4), 16);
+  const b = parseInt(full.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function safeVideoSrc(info) {
+  return info?.src || info?.video || "";
+}
+
 export default function WorkPage({ params }) {
-  /* ---------- Hooks (always top-level & unconditional) ---------- */
-  const pathname = usePathname();
-  const reduce = useReducedMotion();
+  const resolvedParams = usePromise(params);
 
-  // Pointer-follow CTA
-  const [cursorOn, setCursorOn] = useState(false);
-  const videoRef = useRef(null);
-  const [rect, setRect] = useState(null);
-  const cursorX = useSpring(0, { stiffness: 300, damping: 28, mass: 0.2 });
-  const cursorY = useSpring(0, { stiffness: 300, damping: 28, mass: 0.2 });
+  const rawSlug = Array.isArray(resolvedParams?.slug)
+    ? resolvedParams.slug[0]
+    : resolvedParams?.slug || "";
 
-  /* ---------- Scroll-to-top on route changes ---------- */
-  useLayoutEffect(() => {
-    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
-      window.history.scrollRestoration = "manual";
-    }
-    const prev = document.documentElement.style.scrollBehavior;
-    document.documentElement.style.scrollBehavior = "auto";
-    window.scrollTo(0, 0);
-    document.documentElement.style.scrollBehavior = prev;
-  }, [pathname]);
-
-  useEffect(() => {
-    const id = setTimeout(() => window.scrollTo(0, 0), 0);
-    return () => clearTimeout(id);
-  }, [pathname]);
-
-  /* ---------- Params & matches (no hooks needed) ---------- */
-  const rawSlug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug || "";
   const slug = String(rawSlug).toLowerCase();
 
-  const websiteMatch =
-    websiteCaseStudyProps.find((item) => lastSegment(item.page) === slug) || null;
+  const match = useMemo(() => {
+    const w =
+      websiteCaseStudyProps.find((item) => lastSegment(item.page) === slug) || null;
 
-  const brandingMatch =
-    brandingCaseStudyProps.find((item) => lastSegment(item.page) === slug) || null;
+    const b =
+      brandingCaseStudyProps.find((item) => lastSegment(item.page) === slug) || null;
 
-  const match = websiteMatch || brandingMatch;
+    return w || b;
+  }, [slug]);
 
-  /* ---------- Early return AFTER hooks are declared ---------- */
   if (!match) return <NoPageFound slug={slug} />;
 
-  // Optional fallback columns if needed by <CaseStudy />
-  // const leftColumns = match.animationImages?.length
-  //   ? []
-  //   : [
-  //       ["/image.png", "/image.png"],
-  //       ["/image.png", "/image.png"],
-  //     ];
-  // const rightColumns = match.animationImages?.length
-  //   ? []
-  //   : [
-  //       ["/image.png", "/image.png"],
-  //       ["/image.png", "/image.png"],
-  //     ];
+  const timeline = Array.isArray(match.timeLineImages) ? match.timeLineImages : [];
 
-  /* ---------- Pointer handlers (on the overlay so they fire) ---------- */
-  const handleEnter = () => {
-    const el = videoRef.current;
-    if (el) setRect(el.getBoundingClientRect());
-    setCursorOn(true);
-  };
-  const handleLeave = () => setCursorOn(false);
-  const handleMove = (e) => {
-    const el = videoRef.current;
-    const r = rect || el?.getBoundingClientRect();
-    if (!r) return;
-    cursorX.set(e.clientX - r.left);
-    cursorY.set(e.clientY - r.top);
-  };
+  // ✅ Normalize timeline images into [{ src, alt }]
+  const timelineImages = useMemo(() => {
+    return timeline.flatMap((block) => {
+      const images = block?.image;
+      if (!images) return [];
+
+      const srcs = Array.isArray(images) ? images : [images];
+      const alt = block?.alt || "";
+
+      return srcs.map((src) => ({ src, alt }));
+    });
+  }, [timeline]);
+
+  const videoSrc = safeVideoSrc(match);
 
   return (
-    <div className="flex flex-col bg-white min-h-screen isolate">
-      {/* Sticky hero video */}
-      <section style={{ height: "150vh", position: "relative" }}>
-        <div
-          ref={videoRef}
-          className="relative z-0"
-          style={{
-            position: "sticky",
-            top: 0,
-            width: "100vw",
-            height: "95vh",
-            overflow: "hidden",
-            background: "#000",
-          }}
-        >
-          <video
-            src={match.src}
-            autoPlay
-            muted
-            loop
-            playsInline
-            aria-hidden="true"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: hexToRgba(match?.color || "#fff", 0.5) }}
+    >
+      <Navbar />
 
-          {/* Full-cover link (tabbable). We attach pointer handlers here. */}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={match.projectLink}
-            className="absolute inset-0 z-[1500] block outline-none"
-            aria-label={`View ${match.ctaText ?? "project"} (opens in new tab)`}
-            onPointerEnter={handleEnter}
-            onPointerLeave={handleLeave}
-            onPointerMove={handleMove}
-          >
-            {/* CTA text: h2, white, no background. */}
-            {reduce ? (
-              <div className="absolute left-4 bottom-4">
-                <h2 className="text-white text-2xl md:text-3xl font-medium">
-                  {`View ${match.ctaText ?? "project"}`}
-                </h2>
-              </div>
-            ) : cursorOn ? (
-              <motion.div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  x: cursorX,
-                  y: cursorY,
-                  translateX: "12px",
-                  translateY: "16px",
-                }}
+      {/* HERO */}
+      <section className="x-dynamic-padding pt-10 pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[392px_1fr] gap-9 items-stretch">
+          {/* Left */}
+          <div className="flex flex-col gap-9">
+            <h2>{match.companyName ?? match.ctaText ?? "Project"}</h2>
+
+            {match.projectDescription && <p>{match.projectDescription}</p>}
+
+            {match.testimonialText && (
+              <p>
+                &quot;{match.testimonialText}&quot;
+                {match.testimonialAuthor ? ` — ${match.testimonialAuthor}` : ""}
+              </p>
+            )}
+
+            {match.projectLink && (
+              <a
+                href={match.projectLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-4 w-fit"
               >
-                <h2 className="text-white text-2xl md:text-3xl font-medium">
-                  {`View ${match.ctaText ?? "project"}`}
-                </h2>
-              </motion.div>
-            ) : null}
-            <span className="sr-only">{`View ${match.ctaText ?? "project"}`}</span>
-          </a>
+                View project
+              </a>
+            )}
+          </div>
+
+          {/* Right */}
+          <div className="w-full overflow-hidden bg-black h-[70vh]">
+            {videoSrc ? (
+              <video
+                src={videoSrc}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                controls={false}
+                disablePictureInPicture
+                controlsList="nodownload noremoteplayback noplaybackrate"
+                tabIndex={-1}
+                aria-hidden="true"
+                onContextMenu={(e) => e.preventDefault()}
+                className="w-full h-full object-cover pointer-events-none select-none"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-sm opacity-70">
+                No preview video available
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
-      <CaseStudy
-        match={match}
-        alt="company logo"
-        websiteMatch={websiteMatch}
-      />
+      {/* IMAGES — NO CROP */}
+      {timelineImages.length > 0 && (
+        <section className="x-dynamic-padding pb-14">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-9">
+            {timelineImages.map((img, i) => {
+              const isLast = i === timelineImages.length - 1;
+              const isOdd = timelineImages.length % 2 === 1;
+              const makeFullWidth = isOdd && isLast;
+
+              return (
+                <div
+                  key={`${img.src}-${i}`}
+                  className={`overflow-hidden ${
+                    makeFullWidth ? "sm:col-span-2 lg:col-span-2" : ""
+                  }`}
+                >
+                  {/* Consistent card shape, but never crop the image */}
+                  <div className="relative w-full aspect-[16/10] bg-white">
+                    <Image
+                      src={img.src}
+                      alt={img.alt}
+                      fill
+                      sizes={
+                        makeFullWidth
+                          ? "(min-width: 1024px) 100vw, (min-width: 640px) 100vw, 100vw"
+                          : "(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
+                      }
+                      className="object-contain"
+                      priority={i < 3}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

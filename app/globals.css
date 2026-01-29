@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #121212;
-    --foreground: #ffffff;
+  --background: #ffffff;
+    --foreground: #121212;
 }
 
 @theme inline {
@@ -14,8 +14,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #121212;
-    --foreground: #ffffff;
+    --background: #ffffff;
+    --foreground: #121212;
   }
 }
 @font-face {
@@ -63,18 +63,18 @@ p {
 h1 {
   font-family: "Trivia Serif";
   font-weight: 400;
-  font-size: 64px;
+  font-size: 48px;
 }
 
 h2 {
   font-family: "Trivia Serif";
   font-weight: 400;
-  font-size: 40px;
+  font-size: 32px;
 }
 h3 {
   font-family: "Trivia Serif";
   font-weight: 400;
-  font-size: 24px;
+  font-size: 28px;
 }
 
 .dynamic-padding {

@@ -8,7 +8,14 @@ import {
   useInView,
 } from "framer-motion";
 import Image from "next/image";
-import React, { memo, useCallback, useMemo, useRef, useState, useEffect } from "react";
+import React, {
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
 import TextCursor from "./TextCursor";
 
 /* ---- tiny helper (not a hook) ---- */
@@ -18,19 +25,22 @@ function getVideoSrc(info) {
 
 function useReducedMotionPref() {
   const [prefers, setPrefers] = useState(false);
+
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const m = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const on = () => setPrefers(!!m.matches);
+    const on = () => setPrefers(Boolean(m.matches));
     on();
     m.addEventListener?.("change", on);
     return () => m.removeEventListener?.("change", on);
   }, []);
+
   return prefers;
 }
 
 const CaseCard = memo(function CaseCard({
   info = {},
-  noBlank,
+  noBlank = false,
   idx = 0,
   setActiveColor,
   setCursorVisible,
@@ -42,18 +52,24 @@ const CaseCard = memo(function CaseCard({
   expandedIndex,
   linkAll = false,
 }) {
-  /* ====== refs / simple derived booleans that DO NOT affect hook calls ====== */
+  /* ====== refs / derived values ====== */
   const ref = useRef(null);
-  const imgAlt = info.companyName ? `${info.companyName} case study` : "Case study image";
+
+  const imgAlt = info.companyName
+    ? `${info.companyName} case study`
+    : "Case study image";
+
   const titleId = `casecard-title-${idx}`;
   const descId = `casecard-desc-${idx}`;
+
   const href = info.page || info.link || "";
-  const isVideo = Boolean(info.video || info.src?.endsWith?.(".mp4"));
   const videoSrcRaw = getVideoSrc(info);
-  const isEdge = info.firstIndex || info.lastIndex;
+  const isVideo = Boolean(info.video || info.src?.endsWith?.(".mp4"));
+
+  const isEdge = Boolean(info.firstIndex || info.lastIndex);
   const showCursorForThisCard = linkAll || isEdge;
 
-  /* ====== hooks (always called, same order, no early returns) ====== */
+  /* ====== hooks (always called) ====== */
   const reduce = useReducedMotionPref();
 
   const { scrollYProgress } = useScroll({
@@ -61,7 +77,6 @@ const CaseCard = memo(function CaseCard({
     offset: ["start 0.7", "end 0.3"],
   });
 
-  // avoid ternaries inside useTransform args to keep linter happy
   const fadeEnd = reduce ? 1 : 0;
   const scaleEnd = reduce ? 1 : 0.98;
   const blurEnd = reduce ? 0 : 8;
@@ -87,6 +102,7 @@ const CaseCard = memo(function CaseCard({
     if (!isVideo) return;
     const el = ref.current?.querySelector("video");
     if (!el) return;
+
     if (inView) {
       if (shouldLoadVideo) el.play?.();
     } else {
@@ -94,51 +110,74 @@ const CaseCard = memo(function CaseCard({
     }
   }, [isVideo, inView, shouldLoadVideo]);
 
-  /* ====== stable handlers (created after hooks) ====== */
+  /* ====== handlers ====== */
   const onEnter = useCallback(() => {
     setCursorVisible?.(showCursorForThisCard);
     if (isVideo) setWantsVideo(true);
   }, [setCursorVisible, showCursorForThisCard, isVideo]);
 
-  const onLeave = useCallback(() => setCursorVisible?.(false), [setCursorVisible]);
+  const onLeave = useCallback(() => {
+    setCursorVisible?.(false);
+  }, [setCursorVisible]);
 
   const onMove = useCallback(
-    (e) => showCursorForThisCard && setCursorPos?.({ x: e.clientX, y: e.clientY }),
+    (e) => {
+      if (!showCursorForThisCard) return;
+      setCursorPos?.({ x: e.clientX, y: e.clientY });
+    },
     [showCursorForThisCard, setCursorPos]
   );
 
   const onClickExpand = useCallback(() => {
-    if (isVideo) {
-      setWantsVideo(true);
-      onExpand?.(idx);
-    }
+    if (!isVideo) return;
+    setWantsVideo(true);
+    onExpand?.(idx);
   }, [isVideo, idx, onExpand]);
 
-  const cursorActive = cursorVisible && expandedIndex === null && showCursorForThisCard;
+  const cursorActive =
+    Boolean(cursorVisible) &&
+    expandedIndex === null &&
+    showCursorForThisCard;
 
-  /* ====== render (no early returns before hooks) ====== */
+  const AnchorOrButton = href ? "a" : "button";
+  const anchorProps = href
+    ? {
+        href: cursorActive ? href : undefined,
+        target: noBlank ? "_blank" : undefined, // ✅ fixed
+        rel: noBlank ? "noopener noreferrer" : undefined,
+      }
+    : {};
+
+  const commonProps = {
+    className: `relative block w-full ${
+      cursorActive ? "cursor-pointer" : "cursor-default"
+    }`,
+    onMouseEnter: onEnter,
+    onMouseLeave: onLeave,
+    onMouseMove: onMove,
+    onPointerDown: () => isVideo && setWantsVideo(true),
+    "aria-label": info.companyName
+      ? `Open ${info.companyName} case study`
+      : "Open case study",
+  };
+
   return (
     <motion.article
       ref={ref}
       aria-labelledby={titleId}
       aria-describedby={isVideo ? descId : undefined}
-      style={{ opacity, scale, filter, willChange: reduce ? "auto" : "opacity, transform, filter" }}
+      style={{
+        opacity,
+        scale,
+        filter,
+        willChange: reduce ? "auto" : "opacity, transform, filter",
+      }}
       className="w-full dynamic-padding flex flex-col gap-4"
       onFocus={onEnter}
       onBlur={onLeave}
     >
       {href ? (
-        <a
-          href={cursorActive ? href : undefined}
-          target={noBlank && "_blank"}
-          rel={noBlank ? "noopener noreferrer" : undefined}
-          className={`relative block w-full ${cursorActive ? "cursor-pointer" : "cursor-default"}`}
-          onMouseEnter={onEnter}
-          onMouseLeave={onLeave}
-          onMouseMove={onMove}
-          onPointerDown={() => isVideo && setWantsVideo(true)}
-          aria-label={info.companyName ? `Open ${info.companyName} case study` : "Open case study"}
-        >
+        <AnchorOrButton {...commonProps} {...anchorProps}>
           {isVideo ? (
             <motion.video
               src={shouldLoadVideo ? videoSrcRaw : undefined}
@@ -164,15 +203,12 @@ const CaseCard = memo(function CaseCard({
               decoding="async"
             />
           )}
-        </a>
+        </AnchorOrButton>
       ) : (
         <button
           type="button"
           onClick={onClickExpand}
-          onMouseEnter={onEnter}
-          onMouseLeave={onLeave}
-          onMouseMove={onMove}
-          onPointerDown={() => isVideo && setWantsVideo(true)}
+          {...commonProps}
           className="relative block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-black/50 rounded-lg"
           aria-label={
             isVideo
@@ -212,9 +248,9 @@ const CaseCard = memo(function CaseCard({
 
       <div className="flex flex-col text-[#121212]">
         {!!info.companyName && (
-          <h3 id={titleId} className="text-xl md:text-2xl font-medium">
+          <h2 id={titleId}>
             {info.companyName}
-          </h3>
+          </h2>
         )}
         {!!info.desc && (
           <p id={descId} className="text-[#121212]/80">
@@ -223,7 +259,11 @@ const CaseCard = memo(function CaseCard({
         )}
       </div>
 
-      <TextCursor text={info.cursorText || "View Case Study"} pos={cursorPos} visible={cursorActive} />
+      <TextCursor
+        text={info.cursorText || "View Case Study"}
+        pos={cursorPos}
+        visible={cursorActive}
+      />
     </motion.article>
   );
 });
