@@ -102,8 +102,8 @@ export default function PricingSection() {
       <Container className="py-9">
         <div className="flex flex-col gap-9">
           <div className="text-[#151515]">
-            <h2 className="text-2xl font-semibold">My Pricing</h2>
-            <p>Currently accepting 2 new projects per month to keep quality high.</p>
+           <h2 className="text-2xl font-semibold">Web Design Pricing</h2>
+<p>Currently accepting 2 new Bay Area projects per month to keep quality high.</p>
           </div>
 
           <div className="flex sm:flex-row flex-col w-full gap-9">

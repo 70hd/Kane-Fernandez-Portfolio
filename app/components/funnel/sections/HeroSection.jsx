@@ -43,7 +43,7 @@ export default function HeroSection({ metricsTop, metricsBottom }) {
         <Container className="py-6 text-center flex flex-col">
           {/* CSS-only “fade up” (no JS). Respects reduced motion via Tailwind if you want to add it later */}
           <h1 className="h1 motion-safe:animate-[fadeUp_.26s_ease-out_both]">
-            Websites that turn visitors <br/>into paying customers
+            Launch your San Francisco business <br/>with a high-converting website
           </h1>
 
           <div className="mt-6 flex justify-center gap-6 motion-safe:animate-[fadeUp_.26s_ease-out_both] motion-safe:[animation-delay:80ms]">
@@ -53,11 +53,11 @@ export default function HeroSection({ metricsTop, metricsBottom }) {
               rel="noopener noreferrer"
               href="https://calendar.app.google/LkkKqyNdjLWFhPmHA"
             >
-              Quick intro call
+              Book a free strategy call
             </Button>
 
             <Button variant="link" href="/portfolio">
-              View Work
+              See real client results
             </Button>
           </div>
         </Container>

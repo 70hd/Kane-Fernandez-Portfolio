@@ -1,6 +1,7 @@
 // app/layout.jsx
 import { Suspense } from "react";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
+import Head from "next/head";
 import "./globals.css";
 import SmoothScroll from "./components/SmoothScroll";
 import SmoothScrollGate from "./components/SmoothScrollGate";
@@ -11,7 +12,6 @@ import Providers from "./providers";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
-
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +40,32 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Kane Fernandez",
+              "image": "https://kanehfernandez.com/logo.png",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "San Francisco",
+                "addressRegion": "CA",
+                "addressCountry": "US"
+              },
+              "url": "https://kanehfernandez.com",
+              "telephone": "+1-415-000-0000",
+              "description": "Freelance branding and high-conversion website design for San Francisco small businesses.",
+              "areaServed": {
+                "@type": "Place",
+                "name": "San Francisco"
+              }
+            })
+          }}
+        />
+      </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
         suppressHydrationWarning
