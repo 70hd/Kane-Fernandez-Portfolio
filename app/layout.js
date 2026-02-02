@@ -8,6 +8,7 @@ import SmoothScrollGate from "./components/SmoothScrollGate";
 import { Analytics } from "@vercel/analytics/next";
 import AuthHeader from "./components/AuthHeader";
 import Providers from "./providers";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <Head>
+      <SpeedInsights/>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
