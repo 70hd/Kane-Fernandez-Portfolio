@@ -20,7 +20,7 @@ const plans = [
     cta: {
       label: "Start Essential",
       variant: "primary",
-      link: "https://calendar.app.google/LkkKqyNdjLWFhPmHA",
+      link: "https://calendar.app.google/twYedRRkq7st9xoo6",
     },
   },
   {
@@ -38,7 +38,7 @@ const plans = [
     cta: {
       label: "Start Customized",
       variant: "secondary",
-      link: "https://calendar.app.google/LkkKqyNdjLWFhPmHA",
+      link: "https://calendar.app.google/twYedRRkq7st9xoo6",
     },
   },
 {

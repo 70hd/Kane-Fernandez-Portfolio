@@ -51,7 +51,7 @@ export default function HeroSection({ metricsTop, metricsBottom }) {
               variant="primary"
               target="_blank"
               rel="noopener noreferrer"
-              href="https://calendar.app.google/LkkKqyNdjLWFhPmHA"
+              href="https://calendar.app.google/twYedRRkq7st9xoo6"
             >
               Book a free strategy call
             </Button>
